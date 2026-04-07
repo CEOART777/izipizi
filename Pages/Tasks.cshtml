@@ -1,0 +1,46 @@
+@page
+@model практика_2._0.Pages.TasksModel
+@{
+    ViewData["Title"] = "Задания";
+}
+
+<section class="content-card mb-4">
+    <h1 class="h3 mb-3">Домашние задания из БД</h1>
+    <p class="mb-0">Показываются статусы, которые выставляет учитель (таблица HOMEWORK_REVIEWS).</p>
+    @if (Model.LessonId.HasValue && Model.LessonId.Value > 0)
+    {
+        <p class="mt-2 mb-0 text-muted">Фильтр: урок ID <strong>@Model.LessonId</strong>. <a asp-page="/Tasks">Показать все задания</a></p>
+    }
+    @if (Model.NoHomeworkForSelectedLesson)
+    {
+        <div class="alert alert-info mt-3 mb-0">Для выбранного урока записей в таблице заданий не найдено — ниже показан полный список.</div>
+    }
+</section>
+
+<section class="timeline">
+    @if (Model.Homework.Count == 0)
+    {
+        <article class="timeline-item">
+            <h2 class="h5">Задания не найдены</h2>
+            <p>В таблице пока нет задач, связанных с вашим аккаунтом.</p>
+        </article>
+    }
+    else
+    {
+        foreach (var item in Model.Homework)
+        {
+            <article class="timeline-item" id="hw-@item.LessonId-@item.HomeworkId">
+                <h2 class="h5">Урок @item.LessonId, ДЗ @item.HomeworkId</h2>
+                @{
+                    var st = (item.Status ?? string.Empty).Trim().ToLowerInvariant();
+                    var label =
+                        st == "accepted" ? "принято" :
+                        st == "rework" ? "на доработку" :
+                        st == "submitted" ? "отправлено" :
+                        st;
+                }
+                <p>Статус: @label. Оценка: @(item.Grade?.ToString() ?? "нет").</p>
+            </article>
+        }
+    }
+</section>

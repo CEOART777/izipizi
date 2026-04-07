@@ -1,0 +1,16 @@
+@page
+@model практика_2._0.Pages.StatsModel
+@{
+    ViewData["Title"] = "Статистика";
+}
+
+<section class="panel">
+    <h1 class="h2 mb-3">Статистика обучения</h1>
+    <div class="row g-3">
+        <div class="col-md-4"><div class="metric"><div class="fs-2 text-primary">@Model.LessonsPassed</div><div>Курсов завершено</div></div></div>
+        <div class="col-md-4"><div class="metric"><div class="fs-2 text-primary">@Model.HomeworkCount</div><div>Домашних работ</div></div></div>
+        <div class="col-md-4"><div class="metric"><div class="fs-2 text-primary">@Model.AvgProgress.ToString("0")%</div><div>Средний прогресс</div></div></div>
+        <div class="col-md-4"><div class="metric"><div class="fs-2 text-primary">@Model.PurchasedCoursesCount</div><div>Оплаченных курсов</div></div></div>
+        <div class="col-md-4"><div class="metric"><div class="fs-2 text-primary">@Model.ActiveEnrollmentsCount</div><div>Записей на курсы</div></div></div>
+    </div>
+</section>

@@ -1,0 +1,105 @@
+@page
+@model практика_2._0.Pages.AdminModel
+@{
+    ViewData["Title"] = "Админ-панель";
+    var stats = Model.Dashboard.Stats;
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link active" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Обзор платформы</h1>
+                <div class="text-muted">Добро пожаловать в панель администратора</div>
+            </div>
+            <div class="admin-top-right">
+                <input class="form-control admin-search" placeholder="Поиск..." />
+            </div>
+        </div>
+
+        <div class="admin-cards">
+            <div class="admin-card">
+                <div class="admin-card-label">Выручка (оплачено)</div>
+                <div class="admin-card-value">@stats.TotalPaidRevenue.ToString("0.##") ₽</div>
+                <div class="admin-card-sub text-success">+12.5% за месяц</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Потенциал (цены курсов)</div>
+                <div class="admin-card-value">@stats.TotalPotentialRevenue.ToString("0.##") ₽</div>
+                <div class="admin-card-sub text-muted">сумма price в COURSES</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Новые студенты</div>
+                <div class="admin-card-value">@stats.StudentsCount</div>
+                <div class="admin-card-sub text-info">+8.2% за месяц</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Активных курсов</div>
+                <div class="admin-card-value">@stats.ActiveCoursesCount</div>
+                <div class="admin-card-sub text-primary">+3 новых</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Средний чек</div>
+                <div class="admin-card-value">@stats.AvgCoursePrice.ToString("0.##") ₽</div>
+                <div class="admin-card-sub text-warning">+5.8% за месяц</div>
+            </div>
+        </div>
+
+        <div class="admin-grid-2">
+            <div class="admin-panel">
+                <div class="admin-panel-title">Выручка по месяцам</div>
+                <canvas id="revenueChart" height="130"></canvas>
+            </div>
+            <div class="admin-panel">
+                <div class="admin-panel-title">Новые пользователи</div>
+                <canvas id="usersChart" height="130"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        const months = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Dashboard.Months));
+        const revenue = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Dashboard.RevenueByMonth));
+        const users = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.Dashboard.NewUsersByMonth));
+
+        const gridColor = 'rgba(148, 163, 184, 0.25)';
+        const tickColor = 'rgba(226, 232, 240, 0.85)';
+
+        new Chart(document.getElementById('revenueChart'), {
+            type: 'line',
+            data: { labels: months, datasets: [{ label: '₽', data: revenue, tension: 0.35, borderColor: '#38bdf8', backgroundColor: 'rgba(56, 189, 248, 0.15)', fill: true, pointRadius: 3 }] },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+        new Chart(document.getElementById('usersChart'), {
+            type: 'bar',
+            data: { labels: months, datasets: [{ label: 'пользователи', data: users, borderRadius: 8, backgroundColor: '#60a5fa' }] },
+            options: {
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+                    y: { grid: { color: gridColor }, ticks: { color: tickColor } }
+                }
+            }
+        });
+    </script>
+}

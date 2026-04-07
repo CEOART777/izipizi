@@ -1,0 +1,75 @@
+@page
+@model практика_2._0.Pages.AdminLessonsModel
+@{
+    ViewData["Title"] = "Админ — уроки курса";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link active" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Уроки курса</h1>
+                <div class="text-muted">@Model.CourseName</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" asp-page="/AdminCourses">Назад</a>
+                <a class="btn btn-outline-info" asp-page="/AdminLessonCreate" asp-route-courseId="@Model.CourseId">Добавить урок</a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <div class="admin-panel">
+            @if (Model.Lessons.Count == 0)
+            {
+                <div class="alert alert-info mb-0">Уроков пока нет.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-dark table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Урок</th>
+                            <th class="text-end">№</th>
+                            <th class="text-end">ID</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var l in Model.Lessons)
+                        {
+                            <tr>
+                                <td class="text-truncate" style="max-width: 520px;">@l.Cours_name</td>
+                                <td class="text-end">@(l.number_lesson?.ToString() ?? "-")</td>
+                                <td class="text-end">@l.ID_lesson</td>
+                                <td class="text-end">
+                                    <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                        <a class="btn btn-sm btn-outline-light" asp-page="/AdminLessonEdit" asp-route-lessonId="@l.ID_lesson">Изменить</a>
+                                        <a class="btn btn-sm btn-outline-primary" asp-page="/Lesson" asp-route-lessonId="@l.ID_lesson">Открыть</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+

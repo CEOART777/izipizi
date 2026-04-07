@@ -1,0 +1,134 @@
+@page
+@model практика_2._0.Pages.AdminUserViewModel
+@{
+    ViewData["Title"] = "Админ — просмотр пользователя";
+    static string BadgeClass(string? stRaw)
+    {
+        var st = (stRaw ?? string.Empty).Trim().ToLowerInvariant();
+        return st switch
+        {
+            "finished" => "text-bg-success",
+            "refund_requested" => "text-bg-warning",
+            "cancelled" => "text-bg-secondary",
+            "completed" => "text-bg-primary",
+            _ => "text-bg-light"
+        };
+    }
+    static string StatusLabel(string? stRaw)
+    {
+        var st = (stRaw ?? string.Empty).Trim().ToLowerInvariant();
+        return st switch
+        {
+            "finished" => "завершён",
+            "refund_requested" => "ожидает отмены",
+            "cancelled" => "отменён",
+            "completed" => "активен",
+            _ => string.IsNullOrWhiteSpace(stRaw) ? "—" : stRaw!
+        };
+    }
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link active" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Просмотр пользователя</h1>
+                <div class="text-muted">Подписки и статусы по курсам</div>
+            </div>
+            <div class="d-flex gap-2">
+                @if (Model.User is not null)
+                {
+                    <a class="btn btn-outline-light" asp-page="/AdminUserEdit" asp-route-userId="@Model.User.ID_user">Изменить</a>
+                }
+                <a class="btn btn-outline-secondary" asp-page="/AdminUsers">Назад</a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        else if (Model.User is null)
+        {
+            <div class="text-muted">Пользователь не найден.</div>
+        }
+        else
+        {
+            <div class="admin-panel mb-3">
+                <div class="row g-3 align-items-center">
+                    <div class="col-md-6">
+                        <div class="fw-semibold">@Model.User.full_name</div>
+                        <div class="text-muted small">@Model.User.email</div>
+                        <div class="text-muted small">Роль: @Model.User.role</div>
+                    </div>
+                    <div class="col-md-6 text-md-end">
+                        <div class="text-muted small">Бонусы</div>
+                        <div class="fw-bold">@((Model.User.balanse_coins ?? 0).ToString())</div>
+                        <div class="text-muted small mt-2">Возвраты (руб)</div>
+                        <div class="fw-bold">@((Model.User.balance_rub ?? 0m).ToString("0.##"))</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-panel">
+                <h2 class="h5 mb-3">Курсы пользователя</h2>
+
+                @if (Model.Enrollments.Count == 0)
+                {
+                    <div class="text-muted">Записей по курсам нет.</div>
+                }
+                else
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Курс</th>
+                                <th>Статус</th>
+                                <th>Оплата</th>
+                                <th class="text-end">Цена</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var e in Model.Enrollments)
+                            {
+                                Model.CourseMap.TryGetValue(e.ID_cours, out var c);
+                                var name = c?.Course_name ?? $"Курс #{e.ID_cours}";
+                                var price = e.price > 0 ? e.price : (c?.price ?? 0m);
+                                var method = string.IsNullOrWhiteSpace(e.PAY_method) ? "—" : e.PAY_method;
+                                <tr>
+                                    <td>#@e.ID_enrolment</td>
+                                    <td>
+                                        <div class="fw-semibold">@name</div>
+                                        <div class="text-muted small">ID курса: @e.ID_cours</div>
+                                    </td>
+                                    <td><span class="badge @BadgeClass(e.status)">@StatusLabel(e.status)</span></td>
+                                    <td>@method</td>
+                                    <td class="text-end">@price.ToString("0.##") ₽</td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@e.ID_cours">Открыть</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+

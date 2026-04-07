@@ -1,0 +1,45 @@
+@page
+@model практика_2._0.Pages.ProfileNotificationsModel
+@{
+    ViewData["Title"] = "Уведомления";
+}
+
+<section class="mb-3">
+    <h1 class="display-5 fw-bold">Уведомления</h1>
+    <p class="text-muted">Настройте каналы уведомлений о курсах и оплатах.</p>
+</section>
+
+@if (Model.User is not null)
+{
+    @await Html.PartialAsync("_ProfileSectionNav", new практика_2._0.Models.ProfileSectionNavModel
+    {
+        Active = "notifications",
+        UserId = Model.User.ID_user,
+        BonusBalance = Model.User.balanse_coins,
+        RewardCoins = Model.User.reward_coins
+    })
+}
+
+<section class="panel" style="max-width:760px;">
+    <h3 class="mb-3">Каналы уведомлений</h3>
+    @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">@Model.SuccessMessage</div>
+    }
+    <form method="post">
+        <input type="hidden" name="userId" value="@Model.User?.ID_user" />
+        <div class="form-check mb-2">
+            <input asp-for="Input.EmailNotifications" class="form-check-input" />
+            <label asp-for="Input.EmailNotifications" class="form-check-label"></label>
+        </div>
+        <div class="form-check mb-2">
+            <input asp-for="Input.SmsNotifications" class="form-check-input" />
+            <label asp-for="Input.SmsNotifications" class="form-check-label"></label>
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="Input.PromoNotifications" class="form-check-input" />
+            <label asp-for="Input.PromoNotifications" class="form-check-label"></label>
+        </div>
+        <button type="submit" class="btn btn-primary">Сохранить настройки</button>
+    </form>
+</section>

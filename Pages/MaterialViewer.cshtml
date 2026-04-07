@@ -1,0 +1,62 @@
+@page
+@model практика_2._0.Pages.MaterialViewerModel
+@{
+    ViewData["Title"] = "Материалы";
+}
+
+<section class="mb-3 d-flex flex-wrap gap-2 align-items-center justify-content-between">
+    <div>
+        <h1 class="h3 mb-1">Материалы к уроку</h1>
+        <p class="text-muted mb-0">
+            @if (!string.IsNullOrWhiteSpace(Model.LessonTitle))
+            {
+                <span>@Model.LessonTitle</span>
+            }
+        </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        @if (Model.LessonId > 0)
+        {
+            <a class="btn btn-outline-secondary" asp-page="/Lesson" asp-route-lessonId="@Model.LessonId">Назад к уроку</a>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.DownloadUrl))
+        {
+            <a class="btn btn-primary" href="@Model.DownloadUrl">Скачать</a>
+        }
+    </div>
+</section>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert alert-warning">@Model.ErrorMessage</div>
+}
+else if (string.IsNullOrWhiteSpace(Model.OpenUrl))
+{
+    <div class="alert alert-warning">Материалы не найдены.</div>
+}
+else if (!Model.CanInlineView)
+{
+    <div class="panel">
+        <p class="mb-2">Этот формат браузер обычно не открывает внутри страницы.</p>
+        @if (!string.IsNullOrWhiteSpace(Model.DownloadUrl))
+        {
+            <a class="btn btn-primary" href="@Model.DownloadUrl">Скачать файл</a>
+        }
+    </div>
+}
+else
+{
+    <div class="panel p-2">
+        <div class="ratio ratio-16x9">
+            <iframe src="@Model.OpenUrl"
+                    title="Материалы"
+                    style="background:#fff;"
+                    allowfullscreen>
+            </iframe>
+        </div>
+    </div>
+    <p class="text-muted small mt-2 mb-0">
+        Если просмотр не отображается, нажмите «Скачать».
+    </p>
+}
+

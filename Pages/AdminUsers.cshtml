@@ -1,0 +1,70 @@
+@page
+@model практика_2._0.Pages.AdminUsersModel
+@{
+    ViewData["Title"] = "Админ — пользователи";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link active" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Пользователи</h1>
+                <div class="text-muted">Список пользователей из БД</div>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <div class="table-responsive">
+                <table class="table table-dark table-sm align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>ФИО</th>
+                        <th>Email</th>
+                        <th>Роль</th>
+                        <th class="text-end">Бонусы</th>
+                        <th class="text-end">Возвраты (руб)</th>
+                        <th class="text-end">Награды</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var u in Model.Users)
+                    {
+                        <tr>
+                            <td>@u.full_name</td>
+                            <td class="text-muted">@u.email</td>
+                            <td>@u.role</td>
+                            <td class="text-end">@((u.balanse_coins ?? 0).ToString())</td>
+                            <td class="text-end">@((u.balance_rub ?? 0m).ToString("0.##"))</td>
+                            <td class="text-end">@u.reward_coins</td>
+                            <td class="text-end">
+                                @if (!string.Equals(u.role, "teacher", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <a class="btn btn-sm btn-outline-secondary me-2" asp-page="/AdminUserView" asp-route-userId="@u.ID_user">Просмотр</a>
+                                }
+                                <a class="btn btn-sm btn-outline-light" asp-page="/AdminUserEdit" asp-route-userId="@u.ID_user">Изменить</a>
+                                @if (string.Equals(u.role, "teacher", StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <a class="btn btn-sm btn-outline-info ms-2" asp-page="/AdminTeacherAssign" asp-route-teacherId="@u.ID_user">Назначить на курс</a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+

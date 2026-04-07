@@ -1,0 +1,88 @@
+@page
+@model практика_2._0.Pages.AdminCourseCreateModel
+@{
+    ViewData["Title"] = "Админ — добавить курс";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link active" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Добавить курс</h1>
+                <div class="text-muted">Создание новой записи курса в БД</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" asp-page="/AdminCourses">Назад</a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+
+        <div class="admin-panel" style="max-width: 980px;">
+            <form method="post">
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="form-label">Название курса</label>
+                        <input class="form-control" asp-for="Input.Name" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Цена</label>
+                        <input class="form-control" asp-for="Input.Price" />
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Категория</label>
+                        <select class="form-select" asp-for="Input.CategoryId">
+                            @foreach (var category in Model.Categories)
+                            {
+                                <option value="@category.ID_categorise">@category.name_categori</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Рейтинг (fallback)</label>
+                        <input class="form-control" asp-for="Input.Rating" />
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">preview_url (можно ссылку из интернета)</label>
+                        <input class="form-control" asp-for="Input.PreviewUrl" />
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Учитель</label>
+                        <select class="form-select" asp-for="Input.TeacherUserId">
+                            <option value="">Не назначен</option>
+                            @foreach (var t in Model.Teachers)
+                            {
+                                <option value="@t.ID_user">@t.full_name (@t.email)</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-12">
+                        <button class="btn btn-primary" type="submit"
+                                onclick="return confirm('Добавить курс?');">
+                            Добавить
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+

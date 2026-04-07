@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - EduPlatform</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/практика_2._0.styles.css" asp-append-version="true" />
+</head>
+<body class="edu-body">
+    @{
+        var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        var currentUserName = User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value;
+        var currentUserEmail = User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value;
+        var currentPage = (ViewContext.RouteData.Values["page"]?.ToString() ?? string.Empty).Trim();
+        static string Active(string currentPage, string page)
+            => string.Equals(currentPage, page, StringComparison.OrdinalIgnoreCase) ? "active" : string.Empty;
+        var showSideNav =
+            User.Identity?.IsAuthenticated == true &&
+            (string.Equals(currentPage, "/Cabinet", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(currentPage, "/Schedule", StringComparison.OrdinalIgnoreCase) ||
+             string.Equals(currentPage, "/Stats", StringComparison.OrdinalIgnoreCase));
+        var profileInitials = "?";
+        if (!string.IsNullOrWhiteSpace(currentUserName))
+        {
+            var parts = currentUserName.Trim().Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
+            if (parts.Length >= 2)
+            {
+                profileInitials = string.Concat(char.ToUpperInvariant(parts[0][0]), char.ToUpperInvariant(parts[1][0]));
+            }
+            else if (parts.Length == 1 && parts[0].Length >= 1)
+            {
+                var s = parts[0];
+                profileInitials = s.Length >= 2
+                    ? string.Concat(char.ToUpperInvariant(s[0]), char.ToUpperInvariant(s[1]))
+                    : char.ToUpperInvariant(s[0]).ToString();
+            }
+        }
+        // «Страница курса» / «Страница урока» — без query: сервер берёт последний открытый курс/урок из cookie (см. CourseModel / LessonModel).
+    }
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light edu-nav border-bottom">
+            <div class="container">
+                <a class="navbar-brand fw-bold brand" asp-area="" asp-page="/Index">EduPlatform</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-lg-inline-flex justify-content-between w-100">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Index">Курсы</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Course">Страница курса</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="" asp-page="/Lesson">Страница урока</a>
+                        </li>
+                        @if (User.IsInRole("teacher"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Teacher">Проверка</a>
+                            </li>
+                        }
+                        @if (User.IsInRole("admin"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-area="" asp-page="/Admin">Админ</a>
+                            </li>
+                        }
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        @if (User.Identity?.IsAuthenticated == true)
+                        {
+                            <div class="dropdown nav-profile-dropdown">
+                                <button class="btn btn-link nav-profile-btn p-0 border-0 shadow-none text-decoration-none"
+                                        type="button" id="navProfileMenu"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false" aria-haspopup="true" aria-label="Меню профиля">
+                                    <span class="nav-profile-avatar" title="@currentUserName">@profileInitials</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end nav-profile-menu shadow-sm" aria-labelledby="navProfileMenu">
+                                    <li class="px-3 py-2 border-bottom bg-light rounded-top">
+                                        <div class="fw-semibold text-truncate" style="max-width: 240px;">@(currentUserName ?? "Пользователь")</div>
+                                        @if (!string.IsNullOrWhiteSpace(currentUserEmail))
+                                        {
+                                            <div class="small text-muted text-truncate" style="max-width: 240px;">@currentUserEmail</div>
+                                        }
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Cabinet" asp-route-userId="@currentUserId">Личный кабинет</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/UserProfile" asp-route-userId="@currentUserId">Данные профиля</a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-page="/Schedule" asp-route-userId="@currentUserId">Расписание и курсы</a>
+                                    </li>
+                                    <li><hr class="dropdown-divider" /></li>
+                                    <li>
+                                        <form method="post" asp-page="/Logout" class="px-1 pb-1">
+                                            <button type="submit" class="dropdown-item text-danger rounded w-100 text-start">
+                                                Выйти из аккаунта
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/Login">Войти</a>
+                            <a class="btn btn-sm btn-primary" asp-page="/Register">Регистрация</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container py-4 edu-main">
+        @if (showSideNav)
+        {
+            <section class="dashboard-grid">
+                <aside class="panel side-menu edu-side">
+                    <a class="@Active(currentPage, "/Cabinet")" asp-page="/Cabinet" asp-route-userId="@currentUserId">Мои курсы</a>
+                    <a class="@Active(currentPage, "/Schedule")" asp-page="/Schedule" asp-route-userId="@currentUserId">Расписание</a>
+                    <a class="@Active(currentPage, "/Stats")" asp-page="/Stats" asp-route-userId="@currentUserId">Статистика</a>
+                    <div class="mt-2">
+                        <a class="btn btn-sm btn-outline-secondary w-100" asp-page="/Index">К каталогу</a>
+                    </div>
+                </aside>
+                <main role="main">
+                    @RenderBody()
+                </main>
+            </section>
+        }
+        else
+        {
+            <main role="main">
+                @RenderBody()
+            </main>
+        }
+    </div>
+
+    <footer class="footer text-muted py-2">
+        <div class="container">
+            &copy; 2026 - EduPlatform
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,97 @@
+@page
+@model практика_2._0.Pages.AdminRefundsModel
+@{
+    ViewData["Title"] = "Админ — заявки на отмену";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link active" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Заявки на отмену подписки</h1>
+                <div class="text-muted">Подтвердите отмену и возврат средств на баланс</div>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <div class="admin-panel">
+            @if (Model.Requests.Count == 0)
+            {
+                <div class="text-muted">Нет заявок на возврат.</div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Пользователь</th>
+                            <th>Курс</th>
+                            <th>Сумма возврата</th>
+                            <th>Прогресс</th>
+                            <th>Статус</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var r in Model.Requests)
+                        {
+                            <tr>
+                                <td>#@r.EnrollmentId</td>
+                                <td>
+                                    <div class="fw-semibold">@r.UserName</div>
+                                    <div class="text-muted small">@r.UserEmail</div>
+                                </td>
+                                <td>@r.CourseName</td>
+                                <td>@r.Amount.ToString("0.##") ₽</td>
+                                <td>@r.ProgressPercent%</td>
+                                <td><span class="badge text-bg-warning">@r.Status</span></td>
+                                <td class="text-end">
+                                    <form method="post" asp-page-handler="Approve" class="d-inline">
+                                        <input type="hidden" name="enrollmentId" value="@r.EnrollmentId" />
+                                        <input type="hidden" name="userId" value="@r.UserId" />
+                                        <input type="hidden" name="courseId" value="@r.CourseId" />
+                                        <button type="submit" class="btn btn-sm btn-success"
+                                                onclick="return confirm('Подтвердить отмену и вернуть сумму на баланс пользователя?');">
+                                            Подтвердить возврат
+                                        </button>
+                                    </form>
+                                    <form method="post" asp-page-handler="Reject" class="d-inline ms-2">
+                                        <input type="hidden" name="enrollmentId" value="@r.EnrollmentId" />
+                                        <input type="hidden" name="userId" value="@r.UserId" />
+                                        <input type="hidden" name="courseId" value="@r.CourseId" />
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                onclick="return confirm('Отклонить заявку на возврат и оставить подписку активной?');">
+                                            Отклонить
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</section>

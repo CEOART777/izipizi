@@ -1,0 +1,123 @@
+@page
+@model практика_2._0.Pages.AdminUserEditModel
+@{
+    ViewData["Title"] = "Админ — редактирование пользователя";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link active" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Редактирование пользователя</h1>
+                <div class="text-muted">Изменение данных и роли</div>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" asp-page="/AdminUsers">Назад</a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+
+        <div class="admin-panel" style="max-width: 920px;">
+            @if (Model.User is null)
+            {
+                <p class="mb-0">Пользователь не найден.</p>
+            }
+            else
+            {
+                <form method="post">
+                    <input type="hidden" name="userId" value="@Model.User.ID_user" />
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">ФИО</label>
+                            <input class="form-control" asp-for="Input.FullName" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Email</label>
+                            <input class="form-control" asp-for="Input.Email" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Телефон</label>
+                            <input class="form-control" asp-for="Input.Phone" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Роль</label>
+                            <select class="form-select" asp-for="Input.Role">
+                                <option value="student">student</option>
+                                <option value="teacher">teacher</option>
+                                <option value="admin">admin</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Бонусные баллы</label>
+                            <input class="form-control" asp-for="Input.BalanseCoins" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Рублёвый баланс возвратов</label>
+                            <input class="form-control" asp-for="Input.BalanceRub" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Награды (reward_coins)</label>
+                            <input class="form-control" asp-for="Input.RewardCoins" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Текущий курс (ID_curs)</label>
+                            <input class="form-control" asp-for="Input.CurrentCourseId" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">ID__homework</label>
+                            <input class="form-control" asp-for="Input.HomeworkId" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Блокировка</label>
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="Input.IsBlocked" />
+                                <label class="form-check-label" asp-for="Input.IsBlocked">Заблокирован</label>
+                            </div>
+                            <div class="mt-2">
+                                <label class="form-label">Заблокирован до (опционально)</label>
+                                <input class="form-control" asp-for="Input.BlockedUntil" type="datetime-local" />
+                            </div>
+                            <div class="mt-2">
+                                <label class="form-label">Причина блокировки</label>
+                                <input class="form-control" asp-for="Input.BlockReason" placeholder="Напр.: нарушение правил" />
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Деактивация</label>
+                            <div class="form-check">
+                                <input class="form-check-input" asp-for="Input.IsDeleted" />
+                                <label class="form-check-label" asp-for="Input.IsDeleted">Деактивирован (временно)</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit"
+                                    onclick="return confirm('Сохранить изменения пользователя?');">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</section>
+

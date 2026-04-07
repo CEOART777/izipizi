@@ -1,0 +1,130 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Курсы";
+    static string? PreviewSrc(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var s = raw.Trim().Trim('"');
+        if (s.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || s.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            return s;
+        s = s.Replace('\\', '/').TrimStart('~');
+        return s.StartsWith("/") ? s : "/" + s;
+    }
+}
+
+<section class="hero-banner text-center mb-4">
+    <h1>Учись у лучших</h1>
+    <p>Более 1000 курсов от ведущих экспертов индустрии</p>
+    <div class="mt-3">
+        @if (Model.Courses.Count > 0)
+        {
+            <a class="btn btn-light px-4" asp-page="/Course" asp-route-courseId="@Model.Courses[0].ID_curs">Начать обучение</a>
+        }
+        else
+        {
+            <a class="btn btn-light px-4" asp-page="/Course">Начать обучение</a>
+        }
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-3">
+        <aside class="panel h-100">
+            <h4 class="mb-3">Фильтры</h4>
+            <form method="get">
+                <p class="text-muted mb-2">Поиск</p>
+                <input name="Search" class="form-control mb-3" value="@Model.Search" placeholder="Название курса" />
+
+                <p class="text-muted mb-2">Категория</p>
+                <select name="CategoryId" class="form-select mb-3">
+                    <option value="">Все категории</option>
+                    @foreach (var category in Model.Categories)
+                    {
+                        if (Model.CategoryId == category.ID_categorise)
+                        {
+                            <option value="@category.ID_categorise" selected title="@category.discription">@category.name_categori</option>
+                        }
+                        else
+                        {
+                            <option value="@category.ID_categorise" title="@category.discription">@category.name_categori</option>
+                        }
+                    }
+                </select>
+
+                <p class="text-muted mb-2">Сортировка</p>
+                <select name="SortBy" class="form-select mb-3">
+                    <option value="rating_desc" selected="@(Model.SortBy == "rating_desc" || string.IsNullOrWhiteSpace(Model.SortBy))">По рейтингу (убыв.)</option>
+                    <option value="rating_asc" selected="@(Model.SortBy == "rating_asc")">По рейтингу (возр.)</option>
+                    <option value="price_asc" selected="@(Model.SortBy == "price_asc")">По цене (дешевле)</option>
+                    <option value="price_desc" selected="@(Model.SortBy == "price_desc")">По цене (дороже)</option>
+                    <option value="newest" selected="@(Model.SortBy == "newest")">Сначала новые</option>
+                </select>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" type="submit">Применить</button>
+                    <a class="btn btn-outline-secondary" asp-page="/Index">Сбросить</a>
+                </div>
+            </form>
+        </aside>
+    </div>
+    <div class="col-lg-9">
+        <h2 class="mb-0">Популярные курсы</h2>
+        <p class="text-muted mb-4">Найдено курсов: @Model.Courses.Count</p>
+        <div class="row g-3">
+            @if (Model.Courses.Count > 0)
+            {
+                foreach (var course in Model.Courses)
+                {
+                    <div class="col-md-6">
+                        <article class="panel course-card h-100 d-flex flex-column">
+                            <a class="text-decoration-none text-reset flex-grow-1" asp-page="/Course" asp-route-courseId="@course.ID_curs" title="Открыть страницу курса">
+                                @{
+                                    var src = PreviewSrc(course.preview_url);
+                                }
+                                @if (!string.IsNullOrWhiteSpace(src))
+                                {
+                                    <img class="course-image" src="@src" alt="@course.Course_name" loading="lazy" referrerpolicy="no-referrer" />
+                                }
+                                else
+                                {
+                                    <div class="course-image course-image-placeholder">
+                                        <div class="course-image-placeholder-inner">
+                                            <span class="course-tag">Курс</span>
+                                            <span class="course-title-short">@course.Course_name</span>
+                                        </div>
+                                    </div>
+                                }
+                                <h4 class="mt-2">@course.Course_name</h4>
+                                <div class="course-category-badge">
+                                    @(Model.CategoryNames.TryGetValue(course.ID_categorise, out var categoryName) ? categoryName : $"Категория #{course.ID_categorise}")
+                                </div>
+                                <div class="course-meta">
+                                    <span class="star">★</span>
+                                    <span>@course.rating.ToString("0.0")</span>
+                                    <span class="reviews">(@course.ReviewCount)</span>
+                                </div>
+                            </a>
+                            <div class="course-bottom mt-auto pt-2 d-flex flex-wrap gap-2 align-items-center justify-content-between">
+                                <span class="course-price">@course.price.ToString("0.##") ₽</span>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a class="btn btn-outline-primary btn-sm" asp-page="/Lesson" asp-route-courseId="@course.ID_curs" title="Первый урок курса">Уроки</a>
+                                    @if (!User.IsInRole("teacher"))
+                                    {
+                                        <a class="btn btn-primary btn-sm enroll-btn" asp-page="/Enroll" asp-route-courseId="@course.ID_curs">Записаться</a>
+                                    }
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+                    <div class="panel">Курсы пока не загружены из базы данных.</div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

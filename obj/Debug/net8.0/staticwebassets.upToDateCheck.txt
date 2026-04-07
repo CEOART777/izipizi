@@ -1,0 +1,87 @@
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\js\site.js
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-grid.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap-utilities.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.css.map
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css
+wwwroot\lib\bootstrap\dist\css\bootstrap.rtl.min.css.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.js.map
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js
+wwwroot\lib\bootstrap\dist\js\bootstrap.min.js.map
+wwwroot\lib\bootstrap\LICENSE
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.js
+wwwroot\lib\jquery-validation-unobtrusive\jquery.validate.unobtrusive.min.js
+wwwroot\lib\jquery-validation-unobtrusive\LICENSE.txt
+wwwroot\lib\jquery-validation\dist\additional-methods.js
+wwwroot\lib\jquery-validation\dist\additional-methods.min.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.js
+wwwroot\lib\jquery-validation\dist\jquery.validate.min.js
+wwwroot\lib\jquery-validation\LICENSE.md
+wwwroot\lib\jquery\dist\jquery.js
+wwwroot\lib\jquery\dist\jquery.min.js
+wwwroot\lib\jquery\dist\jquery.min.map
+wwwroot\lib\jquery\LICENSE.txt
+wwwroot\uploads\homework\1001\501\20260330_175333_card.png
+wwwroot\uploads\homework\1001\501\20260330_175346_Снимок экрана 2026-03-27 150645.png
+wwwroot\uploads\homework\1001\501\20260330_175402_сладко))))).docx
+wwwroot\uploads\homework\1001\501\20260331_143153_Снимок экрана 2024-10-29 130938.png
+wwwroot\uploads\homework\1001\503\20260330_175528_Снимок экрана 2024-11-04 231954.png
+wwwroot\uploads\homework\1001\505\20260330_175544_Снимок экрана 2025-01-05 195328.png
+wwwroot\uploads\homework\1001\508\20260330_180943_123456789765432.png
+wwwroot\uploads\homework\1001\509\20260330_182826_Снимок экрана 2024-10-24 142419.png
+wwwroot\uploads\homework\1001\516\20260331_190429_Отчет по практике день2.docx
+wwwroot\uploads\homework\1004\506\20260331_140354_123456789765432.png
+wwwroot\uploads\homework\1008\507\20260325_143806_Battle.png
+wwwroot\uploads\homework\1008\509\20260325_184119_8-ППП-31-ИБ.docx
+wwwroot\uploads\homework\1008\509\20260325_184136_Полное собрание стихотворений.jpg
+wwwroot\uploads\homework\1008\516\20260331_190604_Снимок экрана 2026-03-27 150645.png
+wwwroot\uploads\homework\1008\521\20260401_185709_Снимок экрана 2024-10-29 .png
+wwwroot\uploads\homework\1010\506\20260401_144517_123456789765432.png
+wwwroot\uploads\homework\1010\506\20260401_144518_123456789765432.png
+wwwroot\uploads\homework\1010\506\20260401_144519_123456789765432.png
+wwwroot\uploads\homework\1011\506\20260401_180633_Снимок экрана 2024-10-22 143915.png
+wwwroot\uploads\homework_tasks\210\20260401_175051_123456789765432.png
+wwwroot\uploads\homework_tasks\220\20260331_193144_123456789765432.png
+wwwroot\uploads\homework_tasks\221\20260331_143023_Снимок экрана 2024-10-29.png
+wwwroot\uploads\homework_tasks\222\20260331_185744_Снимок экрана 2024-10-29 130938.png
+wwwroot\uploads\homework_tasks\223\20260331_190302_Отчет по практике день2.docx
+wwwroot\uploads\homework_tasks\224\20260401_140057_123456789765432.png
+wwwroot\uploads\homework_tasks\225\20260401_182635_Снимок экрана 2024-10-29.png
+wwwroot\uploads\homework_tasks\226\20260401_185840_Снимок экрана 2024-11-07 140247а.png

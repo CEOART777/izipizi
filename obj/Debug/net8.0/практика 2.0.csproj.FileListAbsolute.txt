@@ -1,0 +1,44 @@
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\appsettings.Development.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\appsettings.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.staticwebassets.runtime.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.staticwebassets.endpoints.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.exe
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.deps.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.runtimeconfig.json
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\практика 2.0.pdb
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\System.Configuration.ConfigurationManager.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\System.Data.OleDb.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\System.Diagnostics.EventLog.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\System.Diagnostics.PerformanceCounter.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\System.Security.Cryptography.ProtectedData.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Data.OleDb.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.Messages.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.EventLog.dll
+D:\практика\практика 2.0\практика 2.0\bin\Debug\net8.0\runtimes\win\lib\net8.0\System.Diagnostics.PerformanceCounter.dll
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.csproj.AssemblyReference.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\rpswa.dswa.cache.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.GeneratedMSBuildEditorConfig.editorconfig
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.AssemblyInfoInputs.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.AssemblyInfo.cs
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.csproj.CoreCompileInputs.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.MvcApplicationPartsAssemblyInfo.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.RazorAssemblyInfo.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.RazorAssemblyInfo.cs
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\rjimswa.dswa.cache.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\scopedcss\Pages\Shared\_Layout.cshtml.rz.scp.css
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\scopedcss\bundle\практика 2.0.styles.css
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\scopedcss\projectbundle\практика 2.0.bundle.scp.css
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\staticwebassets.build.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\staticwebassets.build.json.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\staticwebassets.development.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\________.42079090.Up2Date
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.dll
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\refint\практика 2.0.dll
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.pdb
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\практика 2.0.genruntimeconfig.cache
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\ref\практика 2.0.dll
+D:\практика\практика 2.0\практика 2.0\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

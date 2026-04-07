@@ -1,0 +1,197 @@
+is_global = true
+build_property.TargetFramework = net8.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = практика_2._0
+build_property.RootNamespace = практика_2._0
+build_property.ProjectDir = d:\практика\практика 2.0\практика 2.0\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 8.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = d:\практика\практика 2.0\практика 2.0
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 8.0
+build_property.EnableCodeStyleSeverity = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Admin.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminCourseCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Db3Vyc2VDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminCourseEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Db3Vyc2VFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminCourses.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Db3Vyc2VzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminFinance.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5GaW5hbmNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminLessonCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5MZXNzb25DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminLessonEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5MZXNzb25FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminLessons.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5MZXNzb25zLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminRefunds.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5SZWZ1bmRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminTeacherAssign.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5UZWFjaGVyQXNzaWduLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminUserEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Vc2VyRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminUsers.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Vc2Vycy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/AdminUserView.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQWRtaW5Vc2VyVmlldy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Cabinet.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ2FiaW5ldC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Contacts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ29udGFjdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Course.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcQ291cnNlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Enroll.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRW5yb2xsLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/EnrollmentSuccess.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRW5yb2xsbWVudFN1Y2Nlc3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcRXJyb3IuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Gallery.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcR2FsbGVyeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Lesson.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTGVzc29uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Logout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTG9nb3V0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/MaterialViewer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcTWF0ZXJpYWxWaWV3ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Payment.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUGF5bWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJpdmFjeS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Profile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/ProfileNotifications.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZU5vdGlmaWNhdGlvbnMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/ProfileSecurity.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUHJvZmlsZVNlY3VyaXR5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Register.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcUmVnaXN0ZXIuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Schedule.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2NoZWR1bGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Shared/_ProfileSectionNav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9Qcm9maWxlU2VjdGlvbk5hdi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Stats.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU3RhdHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Tasks.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGFza3MuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Teacher.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/TeacherCourse.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlckNvdXJzZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/TeacherLessonCreate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlckxlc3NvbkNyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/TeacherLessonEdit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVGVhY2hlckxlc3NvbkVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/UserProfile.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcVXNlclByb2ZpbGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[d:/практика/практика 2.0/практика 2.0/Pages/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = UGFnZXNcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-lvj8p4b1u5

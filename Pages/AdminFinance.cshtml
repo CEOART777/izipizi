@@ -1,0 +1,103 @@
+@page
+@model практика_2._0.Pages.AdminFinanceModel
+@{
+    ViewData["Title"] = "Админ — финансы";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link active" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Финансы</h1>
+                <div class="text-muted">Понятная сводка по оплатам и записам</div>
+            </div>
+        </div>
+
+        <div class="admin-cards">
+            <div class="admin-card">
+                <div class="admin-card-label">Платежей</div>
+                <div class="admin-card-value">@Model.Payments.Count</div>
+                <div class="admin-card-sub text-muted">всего записей</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Сумма оплат</div>
+                <div class="admin-card-value">@Model.TotalPaidAmount.ToString("0.##") ₽</div>
+                <div class="admin-card-sub text-muted">подтвержденные оплаты</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Записей на курсы</div>
+                <div class="admin-card-value">@Model.Enrollments.Count</div>
+                <div class="admin-card-sub text-muted">всего записей</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Уникальных пользователей</div>
+                <div class="admin-card-value">@Model.UniquePayUsers</div>
+                <div class="admin-card-sub text-muted">с оплатами</div>
+            </div>
+            <div class="admin-card">
+                <div class="admin-card-label">Топ курс по оплатам</div>
+                <div class="admin-card-value">@Model.TopPaidCourseName</div>
+                <div class="admin-card-sub text-muted">@Model.TopPaidCourseCount оплат</div>
+            </div>
+        </div>
+
+        <div class="admin-grid-2">
+            <div class="admin-panel">
+                <div class="admin-panel-title">Топ курсов по оплатам</div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Курс</th>
+                            <th class="text-end">Оплат</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var row in Model.PaymentsByCourse.Take(10))
+                        {
+                            <tr>
+                                <td>@row.CourseName</td>
+                                <td class="text-end">@row.Count</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="admin-panel">
+                <div class="admin-panel-title">Топ курсов по записям</div>
+                <div class="table-responsive">
+                    <table class="table table-dark table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Курс</th>
+                            <th class="text-end">Записей</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var row in Model.EnrollmentsByCourse.Take(10))
+                        {
+                            <tr>
+                                <td>@row.CourseName</td>
+                                <td class="text-end">@row.Count</td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+

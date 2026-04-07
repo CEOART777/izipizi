@@ -1,0 +1,201 @@
+@page
+@model практика_2._0.Pages.CourseModel
+@{
+    ViewData["Title"] = "Страница курса";
+    static string? PreviewSrc(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw)) return null;
+        var s = raw.Trim().Trim('"');
+        if (s.StartsWith("http://", StringComparison.OrdinalIgnoreCase) || s.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+            return s;
+        s = s.Replace('\\', '/').TrimStart('~');
+        return s.StartsWith("/") ? s : "/" + s;
+    }
+}
+
+<section class="row g-4 align-items-center mb-4">
+    <div class="col-lg-7">
+        <h1 class="display-4 fw-bold">@Model.Course?.Course_name</h1>
+        <p class="fs-3 text-muted">Курс создан: @Model.Course?.create_at.ToString("yyyy-MM-dd")</p>
+        <p class="fs-4">⭐ @Model.DisplayAverageRating.ToString("0.0") (@Model.Course?.ReviewCount) &nbsp; 📚 Категория: @Model.CategoryDisplayName &nbsp; 🧩 Уроков: @Model.Lessons.Count</p>
+        <div class="d-flex align-items-center gap-3 flex-wrap">
+            <span class="display-5 text-primary">@Model.Course?.price.ToString("0.##") ₽</span>
+            @if (Model.IsEnrollmentFinished)
+            {
+                <span class="badge badge-soft-success fs-6">Курс завершён</span>
+            }
+            @if (Model.IsRefundRequested)
+            {
+                <span class="badge text-bg-warning fs-6">ожидает отмены</span>
+            }
+            @if (Model.IsEnrolled)
+            {
+                <a class="btn btn-outline-primary btn-lg" asp-page="/Lesson" asp-route-courseId="@Model.Course?.ID_curs">@(Model.IsEnrollmentFinished ? "Смотреть уроки" : "Перейти к урокам")</a>
+            }
+            else
+            {
+                @if (Model.IsRefundRequested)
+                {
+                    <button class="btn btn-outline-secondary btn-lg" disabled>Ожидает подтверждения админом</button>
+                }
+                else if (!User.IsInRole("teacher"))
+                {
+                    <a class="btn btn-primary btn-lg" asp-page="/Enroll" asp-route-courseId="@Model.Course?.ID_curs">Оплатить и записаться</a>
+                }
+            }
+        </div>
+    </div>
+    <div class="col-lg-5">
+        @{
+            var src = PreviewSrc(Model.Course?.preview_url);
+        }
+        @if (!string.IsNullOrWhiteSpace(src))
+        {
+            <img class="course-image" style="height:300px;" src="@src" alt="@Model.Course?.Course_name" loading="lazy" referrerpolicy="no-referrer" />
+        }
+        else
+        {
+            <div class="course-image course-image-placeholder" style="height:300px;">
+                <div class="course-image-placeholder-inner">
+                    <span class="course-tag">Курс</span>
+                    <span class="course-title-short">@Model.Course?.Course_name</span>
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+<section class="row g-4">
+    <div class="col-lg-8">
+        <div class="mb-3">
+            <a class="tab-chip @(Model.ActiveTab == "description" ? "tab-chip-active" : string.Empty)"
+               asp-page="/Course"
+               asp-route-courseId="@Model.Course?.ID_curs"
+               asp-route-tab="description">Описание</a>
+            <a class="tab-chip @(Model.ActiveTab == "program" ? "tab-chip-active" : string.Empty)"
+               asp-page="/Course"
+               asp-route-courseId="@Model.Course?.ID_curs"
+               asp-route-tab="program">Программа</a>
+            <a class="tab-chip @(Model.ActiveTab == "reviews" ? "tab-chip-active" : string.Empty)"
+               asp-page="/Course"
+               asp-route-courseId="@Model.Course?.ID_curs"
+               asp-route-tab="reviews">Отзывы</a>
+        </div>
+        <div class="panel">
+            @if (Model.ActiveTab == "program")
+            {
+                <h2>Программа курса</h2>
+                @if (Model.Lessons.Count == 0)
+                {
+                    <p class="text-muted mb-0">Уроки пока не добавлены.</p>
+                }
+                else
+                {
+                    <ul class="mb-0">
+                        @foreach (var lesson in Model.Lessons)
+                        {
+                            <li>
+                                @if (Model.IsEnrolled)
+                                {
+                                    <a asp-page="/Lesson" asp-route-lessonId="@lesson.ID_lesson">
+                                        Урок №@(lesson.number_lesson?.ToString() ?? "-"): @lesson.Cours_name
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">Урок №@(lesson.number_lesson?.ToString() ?? "-"): @lesson.Cours_name</span>
+                                }
+                            </li>
+                        }
+                    </ul>
+                }
+            }
+            else if (Model.ActiveTab == "reviews")
+            {
+                <h2>Отзывы</h2>
+
+                @if (!string.IsNullOrWhiteSpace(Model.ReviewMessage))
+                {
+                    <div class="alert alert-warning">@Model.ReviewMessage</div>
+                }
+
+                @if (User.Identity?.IsAuthenticated != true)
+                {
+                    <div class="alert alert-info">
+                        Чтобы оставить отзыв, сначала войдите в аккаунт.
+                        <a asp-page="/Login" class="ms-2">Войти</a>
+                    </div>
+                }
+                else if (!Model.CanLeaveReview)
+                {
+                    <div class="alert alert-info">
+                        Оставить отзыв можно только после оплаты курса.
+                        <a class="btn btn-sm btn-primary ms-2"
+                           asp-page="/Payment"
+                           asp-route-courseId="@Model.Course?.ID_curs">Оплатить курс</a>
+                    </div>
+                }
+                else
+                {
+                    <form method="post" asp-page-handler="AddReview" class="mb-4">
+                        <input type="hidden" name="courseId" value="@Model.Course?.ID_curs" />
+                        <div class="mb-2">
+                            <label class="form-label">Оценка (1-5)</label>
+                            <input class="form-control" asp-for="Input.Rating" type="number" min="1" max="5" step="1" />
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Ваш отзыв</label>
+                            <textarea class="form-control" asp-for="Input.Comment" rows="4"></textarea>
+                        </div>
+                        <button class="btn btn-primary" type="submit">Сохранить отзыв</button>
+                    </form>
+                }
+
+                @if (Model.Reviews.Count == 0)
+                {
+                    <p class="text-muted mb-0">Пока нет отзывов.</p>
+                }
+                else
+                {
+                    foreach (var review in Model.Reviews)
+                    {
+                        <article class="border rounded p-3 mb-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <strong>@(string.IsNullOrWhiteSpace(review.user_name) ? $"Пользователь #{review.ID_user}" : review.user_name)</strong>
+                                <span>⭐ @review.rating.ToString("0.0")</span>
+                            </div>
+                            <p class="mb-1">@review.comment_text</p>
+                            <small class="text-muted">@review.created_at.ToString("yyyy-MM-dd HH:mm")</small>
+                        </article>
+                    }
+                }
+            }
+            else
+            {
+                <h2>О курсе</h2>
+                @if (!string.IsNullOrWhiteSpace(Model.CourseDescription))
+                {
+                    <p class="fs-5 mb-3" style="white-space: pre-wrap;">@Model.CourseDescription</p>
+                }
+                else
+                {
+                    <p class="text-muted mb-3">Текст для блока «О курсе» берётся из поля описания первого урока (в админке/у учителя — «Описание урока»).</p>
+                }
+                <p class="mb-0 text-muted">Выберите вкладку «Программа» или «Отзывы», чтобы увидеть уроки и оценки.</p>
+            }
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel">
+            <h2>Материалы</h2>
+            @if (Model.Lessons.Count > 0)
+            {
+                <p class="mb-0">Первый материал: @Model.Lessons[0].meterials_url</p>
+            }
+            else
+            {
+                <p class="mb-0">Материалы не найдены.</p>
+            }
+        </div>
+    </div>
+</section>

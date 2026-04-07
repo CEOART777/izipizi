@@ -1,0 +1,81 @@
+@page
+@model практика_2._0.Pages.AdminCoursesModel
+@{
+    ViewData["Title"] = "Админ — курсы";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link active" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Курсы</h1>
+                <div class="text-muted">Управление курсами из БД</div>
+            </div>
+            <div>
+                <a class="btn btn-primary" asp-page="/AdminCourseCreate">Добавить курс</a>
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <div class="admin-panel">
+            <div class="table-responsive">
+                <table class="table table-dark table-sm align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th class="text-end">Цена</th>
+                        <th class="text-end">Категория</th>
+                        <th class="text-end">Рейтинг (fallback)</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var c in Model.Courses)
+                    {
+                        <tr>
+                            <td class="text-truncate" style="max-width: 420px;">@c.Course_name</td>
+                            <td class="text-end">@c.price.ToString("0.##") ₽</td>
+                            <td class="text-end">
+                                @(Model.CategoryNames.TryGetValue(c.ID_categorise, out var categoryName)
+                                    ? categoryName
+                                    : $"Категория #{c.ID_categorise}")
+                            </td>
+                            <td class="text-end">@c.rating.ToString("0.0")</td>
+                            <td class="text-end">
+                                <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                    <a class="btn btn-sm btn-outline-light" asp-page="/AdminCourseEdit" asp-route-courseId="@c.ID_curs">Изменить</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-page="/AdminLessons" asp-route-courseId="@c.ID_curs">Уроки</a>
+                                    <a class="btn btn-sm btn-outline-info" asp-page="/AdminLessonCreate" asp-route-courseId="@c.ID_curs">Добавить урок</a>
+                                    <form method="post" asp-page-handler="Delete" class="d-inline">
+                                        <input type="hidden" name="courseId" value="@c.ID_curs" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                onclick="return confirm('Удалить курс? Если есть связанные записи (уроки/оплаты/записи/отзывы), удаление может быть запрещено.');">
+                                            Удалить
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+

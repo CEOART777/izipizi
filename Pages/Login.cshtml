@@ -1,0 +1,36 @@
+@page
+@model практика_2._0.Pages.LoginModel
+@{
+    ViewData["Title"] = "Вход";
+}
+
+<section class="login-page row g-0">
+    <div class="col-lg-6 login-left">
+        <h2 class="brand fw-bold mb-1">EduPlatform</h2>
+        <h1 class="h2 mb-2">Добро пожаловать!</h1>
+        <p class="text-muted mb-4">Войдите в свой аккаунт</p>
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        <form method="post">
+            <input type="hidden" asp-for="ReturnUrl" />
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input asp-for="Input.Email" class="form-control form-control-lg" placeholder="your@email.com" />
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Пароль</label>
+                <input asp-for="Input.Password" class="form-control form-control-lg" type="password" placeholder="........" />
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100 mb-3">Войти</button>
+        </form>
+        <div class="text-center text-muted">Нет аккаунта? <a asp-page="/Register">Зарегистрироваться</a></div>
+    </div>
+    <div class="col-lg-6 login-right">
+        <div>
+            <h2 class="display-6 fw-bold">Начните обучение сегодня</h2>
+            <p class="fs-3">Более 1000 курсов ждут вас</p>
+        </div>
+    </div>
+</section>

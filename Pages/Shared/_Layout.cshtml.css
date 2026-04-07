@@ -1,0 +1,9 @@
+/* Please see documentation at https://learn.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+/* NOTE: базовые стили находятся в `wwwroot/css/site.css`.
+   Здесь держим только то, что относится к layout/scoped css. */
+
+.footer {
+  white-space: nowrap;
+}

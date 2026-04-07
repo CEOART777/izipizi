@@ -1,0 +1,94 @@
+@page
+@model практика_2._0.Pages.AdminLessonEditModel
+@{
+    ViewData["Title"] = "Админ — редактирование урока";
+}
+
+<section class="admin-shell">
+    <aside class="admin-side">
+        <div class="admin-brand">Admin Panel</div>
+        <nav class="admin-nav">
+            <a class="admin-link" asp-page="/Admin">Дашборд</a>
+            <a class="admin-link" asp-page="/AdminUsers">Пользователи</a>
+            <a class="admin-link active" asp-page="/AdminCourses">Курсы</a>
+            <a class="admin-link" asp-page="/AdminFinance">Финансы</a>
+            <a class="admin-link" asp-page="/AdminRefunds">Отписки</a>
+        </nav>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-top">
+            <div>
+                <h1 class="admin-title mb-1">Редактирование урока</h1>
+                <div class="text-muted">ID урока: @Model.LessonId</div>
+            </div>
+            <div class="d-flex gap-2">
+                @if (Model.CourseId > 0)
+                {
+                    <a class="btn btn-outline-secondary" asp-page="/AdminLessons" asp-route-courseId="@Model.CourseId">Назад</a>
+                }
+                else
+                {
+                    <a class="btn btn-outline-secondary" asp-page="/AdminCourses">Назад</a>
+                }
+            </div>
+        </div>
+
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+
+        <div class="admin-panel" style="max-width: 980px;">
+            @if (Model.Lesson is null)
+            {
+                <div class="alert alert-warning mb-0">Урок не найден.</div>
+            }
+            else
+            {
+                <form method="post">
+                    <input type="hidden" name="lessonId" value="@Model.LessonId" />
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Название урока</label>
+                            <input class="form-control" asp-for="Input.Name" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Номер урока</label>
+                            <input class="form-control" asp-for="Input.NumberLesson" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">ID курса</label>
+                            <input class="form-control" asp-for="Input.CourseId" />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">ID урока</label>
+                            <input class="form-control" value="@Model.LessonId" disabled />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">video_url</label>
+                            <input class="form-control" asp-for="Input.VideoUrl" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">meterials_url</label>
+                            <input class="form-control" asp-for="Input.MaterialsUrl" />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Описание урока (опционально)</label>
+                            <textarea class="form-control" asp-for="Input.LessonDescription" rows="4"></textarea>
+                        </div>
+                        <div class="col-12 d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary" type="submit" onclick="return confirm('Сохранить изменения урока?');">Сохранить</button>
+                            <a class="btn btn-outline-primary" asp-page="/Lesson" asp-route-lessonId="@Model.LessonId">Открыть урок</a>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
+    </div>
+</section>
+

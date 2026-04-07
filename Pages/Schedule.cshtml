@@ -1,0 +1,95 @@
+@page
+@model практика_2._0.Pages.ScheduleModel
+@{
+    ViewData["Title"] = "Расписание";
+    var lastCourseId = Model.LastViewedCourseId ?? 0;
+    var lastLessonId = Model.LastViewedLessonId ?? 0;
+}
+
+<section class="panel panel-compact mb-2">
+    <h1 class="h2 mb-1">Расписание</h1>
+    <p class="text-muted mb-0">Ваши курсы, быстрые действия и продолжение обучения.</p>
+</section>
+
+@if (lastCourseId > 0 && lastLessonId > 0)
+{
+    <section class="panel panel-compact mb-2">
+        <h2 class="h5 mb-1">Продолжить с последнего урока</h2>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            <a class="btn btn-sm btn-primary" asp-page="/Lesson" asp-route-lessonId="@lastLessonId">Продолжить урок</a>
+            <a class="btn btn-sm btn-outline-secondary" asp-page="/Course" asp-route-courseId="@lastCourseId">К курсу</a>
+        </div>
+    </section>
+}
+
+<section class="row g-2">
+    @if (Model.Courses.Count == 0)
+    {
+        <div class="col-12">
+            <div class="panel">Нет активных курсов. Запишитесь на курс на странице каталога.</div>
+        </div>
+    }
+    else
+    {
+        foreach (var course in Model.Courses.OrderByDescending(c => c.create_at))
+        {
+            Model.EnrollmentByCourseId.TryGetValue(course.ID_curs, out var enr);
+            var st = (enr?.status ?? string.Empty).Trim().ToLowerInvariant();
+            var isRefundRequested = st == "refund_requested";
+            <div class="col-lg-6">
+                <div class="panel panel-compact schedule-card h-100">
+                    <div class="d-flex justify-content-between gap-3">
+                        <div>
+                            <h2 class="h5 mb-1">@course.Course_name</h2>
+                            <div class="text-muted small">
+                                Создан: @course.create_at.ToString("yyyy-MM-dd") · Цена: @course.price.ToString("0.##") ₽ · ⭐ @course.rating.ToString("0.0")
+                            </div>
+                            @if (enr is not null)
+                            {
+                                <div class="mt-1 d-flex flex-wrap gap-2">
+                                    @if (isRefundRequested)
+                                    {
+                                        <span class="badge border border-warning text-dark bg-warning bg-opacity-25">ожидает отмены</span>
+                                    }
+                                    <span class="badge border border-secondary text-dark bg-light">Оплата: @enr.PAY_method</span>
+                                </div>
+                            }
+                        </div>
+                        <div class="text-end">
+                            <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@course.ID_curs">Открыть курс</a>
+                        </div>
+                    </div>
+
+                    <hr class="my-2" />
+
+                    <div class="d-flex flex-wrap gap-2">
+                        @if (isRefundRequested)
+                        {
+                            <button class="btn btn-sm btn-outline-secondary" disabled>Ожидает отмены</button>
+                        }
+                        else
+                        {
+                            <a class="btn btn-sm btn-primary" asp-page="/Lesson" asp-route-courseId="@course.ID_curs">К урокам</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/Tasks" asp-route-lessonId="@course.ID_lesson">Задания</a>
+                            <a class="btn btn-sm btn-outline-secondary" asp-page="/MaterialViewer" asp-route-lessonId="@course.ID_lesson">Материалы</a>
+                            <a class="btn btn-sm btn-outline-danger" asp-page="/UserProfile">Отписаться</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    }
+</section>
+
+@if (Model.PurchasedCourses.Count > 0)
+{
+    <section class="panel panel-compact mt-2">
+        <h2 class="h5 mb-2">Все оплаченные курсы</h2>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var item in Model.PurchasedCourses)
+            {
+                <a class="btn btn-sm btn-outline-secondary" asp-page="/Course" asp-route-courseId="@item.ID_curs">@item.Course_name</a>
+            }
+        </div>
+    </section>
+}

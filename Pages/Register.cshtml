@@ -1,0 +1,45 @@
+@page
+@model практика_2._0.Pages.RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<section class="panel mx-auto" style="max-width:760px;">
+    <h1 class="h2 mb-3">Регистрация</h1>
+    <p class="text-muted">Создайте аккаунт для записи на курсы.</p>
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+    <form method="post">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Имя</label>
+                <input asp-for="Input.FirstName" class="form-control form-control-lg" placeholder="Введите имя" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Фамилия</label>
+                <input asp-for="Input.LastName" class="form-control form-control-lg" placeholder="Введите фамилию" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Email</label>
+                <input asp-for="Input.Email" class="form-control form-control-lg" placeholder="you@email.com" />
+            </div>
+            <div class="col-12">
+                <label class="form-label">Телефон</label>
+                <input asp-for="Input.Phone" class="form-control form-control-lg" placeholder="+79990000000" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Пароль</label>
+                <input asp-for="Input.Password" class="form-control form-control-lg" type="password" />
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Повторите пароль</label>
+                <input asp-for="Input.ConfirmPassword" class="form-control form-control-lg" type="password" />
+            </div>
+            <div class="col-12 d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">Создать аккаунт</button>
+            </div>
+        </div>
+    </form>
+</section>

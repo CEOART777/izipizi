@@ -1,0 +1,56 @@
+@page
+@model практика_2._0.Pages.EnrollModel
+@{
+    ViewData["Title"] = "Запись на курс";
+}
+
+<section class="panel mx-auto" style="max-width:840px;">
+    <h1 class="h2 mb-2">Запись на курс</h1>
+    <p class="text-muted mb-4">Проверьте данные и перейдите к оплате.</p>
+
+    <div class="panel mb-3">
+        <h3 class="h4 mb-2">@Model.Course?.Course_name</h3>
+        <p class="text-muted mb-0">Формат: онлайн, доступ 12 месяцев, сертификат по завершению.</p>
+    </div>
+
+    <div class="row g-3">
+        <div class="col-md-6">
+            <label class="form-label">ФИО</label>
+            <input class="form-control form-control-lg" value="@Model.User?.full_name" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Email</label>
+            <input class="form-control form-control-lg" value="@Model.User?.email" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Телефон</label>
+            <input class="form-control form-control-lg" value="@Model.User?.phone" />
+        </div>
+        <div class="col-md-6">
+            <label class="form-label">Промокод</label>
+            <input class="form-control form-control-lg" placeholder="Введите промокод" />
+        </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+        <a class="btn btn-outline-secondary" asp-page="/Course" asp-route-courseId="@Model.Course?.ID_curs">Вернуться к курсу</a>
+        @if (Model.ExistingEnrollment is null)
+        {
+            <form method="post" class="d-inline">
+                <input type="hidden" name="courseId" value="@Model.Course?.ID_curs" />
+                <button type="submit" class="btn btn-primary">Оплатить и записаться</button>
+            </form>
+        }
+        else
+        {
+            @if (string.Equals((Model.ExistingEnrollment?.status ?? string.Empty).Trim(), "refund_requested", StringComparison.OrdinalIgnoreCase))
+            {
+                <button class="btn btn-outline-secondary" disabled>Заявка на отмену уже отправлена (ожидает админа)</button>
+            }
+            else
+            {
+                <a class="btn btn-success" asp-page="/EnrollmentSuccess" asp-route-courseId="@Model.Course?.ID_curs">Вы уже записаны</a>
+            }
+        }
+    </div>
+</section>

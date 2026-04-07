@@ -1,0 +1,57 @@
+@page
+@model практика_2._0.Pages.PaymentModel
+@{
+    ViewData["Title"] = "Оплата";
+}
+
+<section class="row g-3">
+    <div class="col-lg-8">
+        <div class="panel">
+            <h1 class="h2 mb-3">Оплата курса</h1>
+            <p class="text-muted">Локальный режим: для записи достаточно ввести номер телефона (оплата подтверждается сразу).</p>
+            @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger">@Model.ErrorMessage</div>
+            }
+            @if (Model.Enrollment is null)
+            {
+                <form method="post">
+                    <input type="hidden" name="courseId" value="@Model.Course?.ID_curs" />
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <label class="form-label">Номер телефона</label>
+                            <input class="form-control form-control-lg" asp-for="Phone" placeholder="+7..." />
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Списать баллы (1 балл = 1 ₽)</label>
+                            <input class="form-control form-control-lg" asp-for="CoinsToUse" type="number" min="0" max="@Model.AvailableCoins" />
+                            <div class="form-text">Доступно баллов: @Model.AvailableCoins</div>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-4">
+                        <a class="btn btn-outline-secondary" asp-page="/Enroll" asp-route-courseId="@Model.Course?.ID_curs">Назад</a>
+                        <button class="btn btn-primary" type="submit">Подтвердить и записаться</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="d-flex gap-2 mt-4">
+                    <a class="btn btn-outline-secondary" asp-page="/Enroll" asp-route-courseId="@Model.Course?.ID_curs">Назад</a>
+                    <a class="btn btn-success" asp-page="/EnrollmentSuccess" asp-route-courseId="@Model.Course?.ID_curs">Оплата подтверждена</a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="panel">
+            <h2 class="h4">Детали заказа</h2>
+            <p class="mb-1">Курс: @Model.Course?.Course_name</p>
+            <p class="mb-1">Метод: @(Model.Enrollment?.PAY_method ?? "local")</p>
+            <p class="mb-1">Цена курса: @Model.Course?.price.ToString("0.##") ₽</p>
+            <p class="mb-1">Баллов доступно: @Model.AvailableCoins (1 балл = 1 ₽)</p>
+            <p class="mb-1 text-muted small">Сколько списать — укажите в форме слева; итог пересчитывается.</p>
+            <p class="h5 text-primary mb-0">К оплате: @Model.FinalAmount.ToString("0.##") ₽</p>
+        </div>
+    </div>
+</section>

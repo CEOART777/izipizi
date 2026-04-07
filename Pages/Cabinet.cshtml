@@ -1,0 +1,80 @@
+@page
+@model практика_2._0.Pages.CabinetModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<section>
+    <div>
+        <h1 class="display-5 fw-bold">Привет, @Model.User?.full_name! 👋</h1>
+        <p class="text-muted fs-3">Продолжим обучение сегодня</p>
+        <div class="panel mb-4">
+            <h3>Общий прогресс обучения</h3>
+            <div class="row g-3 mt-2">
+                <div class="col-md-3"><div class="metric"><div class="fs-2 text-primary">@Model.CourseProgressPercent%</div><div>Прогресс</div></div></div>
+                <div class="col-md-3"><div class="metric"><div class="fs-2 text-primary">@Model.ActiveEnrollments.Count</div><div>Активных курса</div></div></div>
+                <div class="col-md-3"><div class="metric"><div class="fs-2 text-primary">@Model.FinishedCount</div><div>Завершено</div></div></div>
+                <div class="col-md-3"><div class="metric"><div class="fs-2 text-primary">--</div><div>В неделю</div></div></div>
+            </div>
+        </div>
+        <div class="panel mb-4">
+            <h4>Текущие курсы</h4>
+            @if (Model.CurrentCourse is null)
+            {
+                <p class="text-muted mb-0">Нет активных курсов. Завершённые — ниже в блоке «Завершённые курсы».</p>
+            }
+            else
+            {
+                <div class="mt-3">
+                    <h3 class="h4">@Model.CurrentCourse.Course_name</h3>
+                    <div class="progress-wrap mb-2"><div class="progress-bar-blue" style="width:@Model.CourseProgressPercent%"></div></div>
+                    <p class="text-primary mb-0">@Model.CourseProgressPercent% завершено (после проверки)</p>
+                </div>
+                <div class="mt-4">
+                    <h3 class="h4">Статус обучения</h3>
+                    <div class="progress-wrap mb-2"><div class="progress-bar-blue" style="width:@Model.CourseProgressPercent%"></div></div>
+                    <p class="text-primary mb-0">Прогресс начисляется после проверки учителем.</p>
+                </div>
+            }
+        </div>
+
+        @if (Model.FinishedEnrollments.Count > 0)
+        {
+            <div class="panel mb-4">
+                <h4>Завершённые курсы</h4>
+                <ul class="clean-list mb-0">
+                    @foreach (var e in Model.FinishedEnrollments)
+                    {
+                        var title = Model.FinishedCourseNames.TryGetValue(e.ID_cours, out var n) ? n : $"Курс #{e.ID_cours}";
+                        <li class="d-flex justify-content-between align-items-center py-2 border-bottom">
+                            <span>@title</span>
+                            <span class="badge text-bg-success">✓ завершено</span>
+                        </li>
+                    }
+                </ul>
+                <div class="text-muted small mt-2">Курс считается завершённым, когда учитель нажимает «Завершить обучение».</div>
+            </div>
+        }
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="panel h-100">
+                    <h4>Ближайшие дедлайны</h4>
+                    <p class="mb-1">Курс: @Model.CurrentCourse?.Course_name</p>
+                    <p class="text-danger">Создан: @Model.CurrentCourse?.create_at.ToString("yyyy-MM-dd")</p>
+                    <p class="mb-1">Список задач будет загружен автоматически</p>
+                    <p class="text-danger">Homework ID: @Model.User?.ID__homework</p>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="panel h-100">
+                    <h4>Уведомления</h4>
+                    <p class="mb-1">Почта: @Model.User?.email</p>
+                    <p class="text-muted">Телефон: @Model.User?.phone</p>
+                    <p class="mb-1">Роль: @Model.User?.role</p>
+                    <p class="text-muted">Баллы: @(Model.User?.balanse_coins ?? 0)</p>
+                    <p class="text-muted">Курсов в обучении: @Model.Enrollments.Count</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

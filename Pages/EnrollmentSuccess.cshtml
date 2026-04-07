@@ -1,0 +1,17 @@
+@page
+@model практика_2._0.Pages.EnrollmentSuccessModel
+@{
+    ViewData["Title"] = "Запись подтверждена";
+}
+
+<section class="panel mx-auto text-center" style="max-width:760px;">
+    <h1 class="display-6 text-success fw-bold mb-3">Оплата прошла успешно</h1>
+    <p class="fs-4 text-muted mb-4">
+        Вы записаны на курс @(Model.Course?.Course_name ?? "без названия"). Доступ к урокам открыт в личном кабинете.
+    </p>
+    <div class="d-flex justify-content-center flex-wrap gap-2">
+        <a class="btn btn-primary" asp-page="/Cabinet">Перейти в личный кабинет</a>
+        <a class="btn btn-outline-primary" asp-page="/UserProfile">Мои заказы</a>
+        <a class="btn btn-outline-secondary" asp-page="/Lesson" asp-route-courseId="@Model.Course?.ID_curs">Открыть урок</a>
+    </div>
+</section>

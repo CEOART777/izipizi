@@ -1,0 +1,320 @@
+@page
+@model практика_2._0.Pages.UserProfileModel
+@{
+    ViewData["Title"] = "Профиль пользователя";
+    var uid = Model.User?.ID_user ?? 0;
+}
+
+<section class="mb-3">
+    <h1 class="display-4 fw-bold">Профиль пользователя</h1>
+    <p class="text-muted fs-3">Управление личной информацией и настройками</p>
+</section>
+
+@if (Model.User is not null)
+{
+    @await Html.PartialAsync("_ProfileSectionNav", new практика_2._0.Models.ProfileSectionNavModel
+    {
+        Active = "info",
+        UserId = uid,
+        BonusBalance = Model.User.balanse_coins,
+        RubBalance = Model.User.balance_rub,
+        RewardCoins = Model.User.reward_coins
+    })
+}
+
+<section class="row g-3">
+    <div class="col-lg-4 order-first order-lg-last">
+        <div class="panel mb-3">
+            <h4 class="h5">Сводка</h4>
+            <p class="mb-1">Бонусные баллы: <span class="fw-bold text-primary">@(Model.User?.balanse_coins ?? 0)</span></p>
+            <p class="mb-1">Баланс (руб): <span class="fw-bold">@((Model.User?.balance_rub ?? 0m).ToString("0.##"))</span></p>
+            <p class="mb-1">Награды: <span class="fw-semibold text-success">@(Model.User?.reward_coins ?? 0)</span></p>
+            <p class="mb-1">Роль: <span class="text-success">@Model.User?.role</span></p>
+            <p class="mb-3">Записей на курсы: <span class="text-success">@Model.ActiveEnrollments.Count</span></p>
+            <a class="btn btn-outline-primary w-100" asp-page="/Payment" asp-route-courseId="@Model.User?.ID_curs">Оплата / баллы</a>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="panel mb-3">
+            <h2>@Model.User?.full_name</h2>
+            <p class="text-muted">@Model.User?.email</p>
+            <span class="badge text-bg-primary">@Model.User?.role</span>
+        </div>
+        @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+        {
+            <div class="alert alert-success">@Model.SuccessMessage</div>
+        }
+        @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+        <div class="panel">
+            <h3>Личная информация</h3>
+            <form method="post" asp-page-handler="Save">
+                <div class="row g-3">
+                    <div class="col-12"><label class="form-label">ФИО</label><input asp-for="Input.FullName" class="form-control form-control-lg" /></div>
+                    <div class="col-12"><label class="form-label">Email</label><input asp-for="Input.Email" class="form-control form-control-lg" /></div>
+                    <div class="col-12"><label class="form-label">Телефон</label><input asp-for="Input.Phone" class="form-control form-control-lg" /></div>
+                    <div class="col-12"><button type="submit" class="btn btn-primary">Сохранить профиль</button></div>
+                </div>
+            </form>
+        </div>
+        <div class="panel mt-3">
+            <h3>Мои заказы и курсы</h3>
+            @if (Model.ActiveEnrollments.Count == 0 && Model.PendingCancelEnrollments.Count == 0 && Model.FinishedEnrollments.Count == 0)
+            {
+                <p class="text-muted mb-0">Вы пока не записаны ни на один курс.</p>
+            }
+            else
+            {
+                <div class="mb-3">
+                    @foreach (var e in Model.ActiveEnrollments.GroupBy(x => x.ID_cours).Select(g => g.First()))
+                    {
+                        if (!Model.EnrolledCourseMap.TryGetValue(e.ID_cours, out var pc)) { continue; }
+                        <a class="btn btn-sm btn-outline-primary me-2 mb-2" asp-page="/Course" asp-route-courseId="@pc.ID_curs">@pc.Course_name</a>
+                    }
+                </div>
+                <h4 class="h6 text-muted">Активные</h4>
+                @if (Model.ActiveEnrollments.Count == 0)
+                {
+                    <p class="text-muted small">Нет активных курсов (все завершены или отменены).</p>
+                }
+                else
+                {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th>Курс</th>
+                                <th>Оплата</th>
+                                <th>Цена</th>
+                                <th>Прогресс</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.ActiveEnrollments)
+                            {
+                                var courseName = Model.EnrolledCourseMap.TryGetValue(item.ID_cours, out var c)
+                                    ? c.Course_name
+                                    : $"Курс #{item.ID_cours}";
+                                var coursePrice = Model.EnrolledCourseMap.TryGetValue(item.ID_cours, out var c2)
+                                    ? c2.price
+                                    : 0m;
+                                var displayMethod = string.IsNullOrWhiteSpace(item.PAY_method) ? "local" : item.PAY_method;
+                                var displayPrice = item.price > 0 ? item.price : coursePrice;
+                                var progress = Model.ActiveCourseProgressMap.TryGetValue(item.ID_cours, out var pp) ? pp : 0;
+                                <tr>
+                                    <td>@courseName</td>
+                                    <td>@displayMethod</td>
+                                    <td>@displayPrice.ToString("0.##") ₽</td>
+                                    <td>
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>@progress%</span>
+                                            <div class="progress" style="width: 120px; height: 8px;">
+                                                <div class="progress-bar" role="progressbar" style="width:@progress%"></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="text-end">
+                                        <div class="d-flex justify-content-end gap-2 flex-wrap">
+                                            <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@item.ID_cours">Открыть</a>
+                                            <form method="post" asp-page-handler="Unenroll" class="d-inline">
+                                                <input type="hidden" name="courseId" value="@item.ID_cours" />
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"
+                                                        onclick="return confirm('Отправить заявку на отмену подписки? Возврат подтвердит администратор.');">
+                                                    Запросить отмену
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                }
+                @if (Model.PendingCancelEnrollments.Count > 0)
+                {
+                    <h4 class="h6 text-muted mt-3">Ожидают отмены</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Курс</th>
+                                <th>Статус</th>
+                                <th>Оплата</th>
+                                <th>Цена</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.PendingCancelEnrollments)
+                            {
+                                var courseName = Model.EnrolledCourseMap.TryGetValue(item.ID_cours, out var c)
+                                    ? c.Course_name
+                                    : $"Курс #{item.ID_cours}";
+                                var coursePrice = Model.EnrolledCourseMap.TryGetValue(item.ID_cours, out var c2)
+                                    ? c2.price
+                                    : 0m;
+                                var displayMethod = string.IsNullOrWhiteSpace(item.PAY_method) ? "local" : item.PAY_method;
+                                var displayPrice = item.price > 0 ? item.price : coursePrice;
+                                <tr>
+                                    <td>@courseName</td>
+                                    <td><span class="badge text-bg-warning">ожидает отмены</span></td>
+                                    <td>@displayMethod</td>
+                                    <td>@displayPrice.ToString("0.##") ₽</td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@item.ID_cours">Открыть</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-muted small mt-2">Администратор подтвердит отмену и выполнит возврат на баланс.</div>
+                }
+                @if (Model.FinishedEnrollments.Count > 0)
+                {
+                    <h4 class="h6 text-muted mt-3">Завершённые</h4>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle mb-0">
+                            <thead>
+                            <tr>
+                                <th>Курс</th>
+                                <th>Статус</th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.FinishedEnrollments)
+                            {
+                                var courseName = Model.EnrolledCourseMap.TryGetValue(item.ID_cours, out var c)
+                                    ? c.Course_name
+                                    : $"Курс #{item.ID_cours}";
+                                <tr>
+                                    <td>@courseName</td>
+                                    <td><span class="badge text-bg-success">завершено</span></td>
+                                    <td class="text-end">
+                                        <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@item.ID_cours">Открыть</a>
+                                    </td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+            }
+        </div>
+        <div class="panel mt-3">
+            <h3>Просмотр подписок</h3>
+            @if (Model.Enrollments.Count == 0)
+            {
+                <p class="text-muted mb-0">Подписок пока нет. После оплаты курс появится здесь.</p>
+            }
+            else
+            {
+                <div class="row g-3">
+                    @foreach (var e in Model.ActiveEnrollments.GroupBy(x => x.ID_cours).Select(g => g.First()))
+                    {
+                        if (!Model.EnrolledCourseMap.TryGetValue(e.ID_cours, out var course)) { continue; }
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100">
+                                <h5 class="mb-2">@course.Course_name</h5>
+                                <p class="text-muted mb-2"><span class="badge text-bg-primary">в обучении</span></p>
+                                <p class="text-muted mb-2">Цена: @course.price.ToString("0.##") ₽</p>
+                                <p class="text-muted mb-3">Стартовый урок: ID @course.ID_lesson</p>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@course.ID_curs">Открыть курс</a>
+                                    <a class="btn btn-sm btn-primary" asp-page="/Lesson" asp-route-courseId="@course.ID_curs">Открыть урок</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    @foreach (var e in Model.FinishedEnrollments.GroupBy(x => x.ID_cours).Select(g => g.First()))
+                    {
+                        if (!Model.EnrolledCourseMap.TryGetValue(e.ID_cours, out var course)) { continue; }
+                        <div class="col-md-6">
+                            <div class="border rounded p-3 h-100 border-success">
+                                <h5 class="mb-2">@course.Course_name</h5>
+                                <p class="text-muted mb-2"><span class="badge text-bg-success">курс завершён</span></p>
+                                <p class="text-muted mb-2">Цена: @course.price.ToString("0.##") ₽</p>
+                                <div class="d-flex gap-2 flex-wrap">
+                                    <a class="btn btn-sm btn-outline-primary" asp-page="/Course" asp-route-courseId="@course.ID_curs">Материалы курса</a>
+                                    <a class="btn btn-sm btn-outline-secondary" asp-page="/Lesson" asp-route-courseId="@course.ID_curs">Уроки</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+
+        <div class="panel mt-3">
+            <h3>Сданные домашние задания (файлы)</h3>
+            @if (Model.HomeworkRows.Count == 0)
+            {
+                <p class="text-muted mb-0">Вы ещё не загружали файлы с выполненными заданиями.</p>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-sm align-middle mb-0">
+                        <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>ДЗ</th>
+                            <th>Файл</th>
+                            <th>Статус</th>
+                            <th class="text-end">Оценка</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var row in Model.HomeworkRows)
+                        {
+                            var s = row.Submission;
+                            var rev = row.Review;
+                            var st = (rev?.Status ?? "").Trim().ToLowerInvariant();
+                            if (string.IsNullOrEmpty(st))
+                            {
+                                st = "submitted";
+                            }
+                            var badgeCls = st switch
+                            {
+                                "accepted" => "text-bg-success",
+                                "rework" => "text-bg-warning",
+                                "submitted" => "text-bg-primary",
+                                "draft" => "text-bg-secondary",
+                                _ => "text-bg-secondary"
+                            };
+                            var badgeLabel = st switch
+                            {
+                                "accepted" => "принято",
+                                "rework" => "переделать",
+                                "submitted" => "ждёт проверки",
+                                "draft" => "черновик",
+                                _ => st
+                            };
+                            <tr>
+                                <td class="text-muted">@s.UploadedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    <div class="fw-semibold">@row.LessonLabel</div>
+                                    <div class="text-muted small">ДЗ #@s.HomeworkId</div>
+                                </td>
+                                <td class="text-truncate" style="max-width: 320px;">@s.FileName</td>
+                                <td><span class="badge @badgeCls">@badgeLabel</span></td>
+                                <td class="text-end">@((rev?.Grade).HasValue == true ? rev!.Grade!.Value.ToString() : "—")</td>
+                                <td class="text-end">
+                                    <a class="btn btn-sm btn-outline-primary" href="@s.Url" target="_blank" rel="noopener">Открыть</a>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-muted small mt-2 mb-0">Файлы хранятся на сервере в <code>wwwroot/uploads/homework</code>.</p>
+            }
+        </div>
+    </div>
+</section>

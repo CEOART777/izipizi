@@ -1,0 +1,320 @@
+@page
+@model практика_2._0.Pages.LessonModel
+@{
+    ViewData["Title"] = "Страница урока";
+    var lessonId = Model.Lesson?.ID_lesson ?? 0;
+    var homeworkId = Model.Progress?.ID_homework ?? 0;
+    static string? NormalizeUrl(string? raw)
+    {
+        if (string.IsNullOrWhiteSpace(raw))
+        {
+            return null;
+        }
+
+        var s = raw.Trim().Replace('\\', '/');
+        // Иногда в БД попадается мусор перед ссылкой, напр. "/videos/js_1.https://youtube..."
+        var httpsIdx = s.IndexOf("https://", StringComparison.OrdinalIgnoreCase);
+        var httpIdx = s.IndexOf("http://", StringComparison.OrdinalIgnoreCase);
+        var idx = httpsIdx >= 0 ? httpsIdx : httpIdx;
+        if (idx > 0)
+        {
+            s = s[idx..];
+        }
+        if (idx == 0)
+        {
+            return s;
+        }
+
+        // поддержка относительных путей из БД типа "videos/1.mp4" или "/videos/1.mp4"
+        s = s.TrimStart('~');
+        if (!s.StartsWith("/"))
+        {
+            s = "/" + s;
+        }
+
+        return s;
+    }
+
+    static string? ToYouTubeEmbed(string url)
+    {
+        // https://www.youtube.com/watch?v=VIDEO_ID&...
+        var watchIdx = url.IndexOf("youtube.com/watch", StringComparison.OrdinalIgnoreCase);
+        if (watchIdx >= 0)
+        {
+            var vIdx = url.IndexOf("v=", StringComparison.OrdinalIgnoreCase);
+            if (vIdx >= 0)
+            {
+                var start = vIdx + 2;
+                var end = url.IndexOf('&', start);
+                var id = (end >= 0 ? url[start..end] : url[start..]).Trim();
+                if (!string.IsNullOrWhiteSpace(id))
+                {
+                    return $"https://www.youtube.com/embed/{id}";
+                }
+            }
+        }
+
+        // https://youtu.be/VIDEO_ID?...
+        var shortIdx = url.IndexOf("youtu.be/", StringComparison.OrdinalIgnoreCase);
+        if (shortIdx >= 0)
+        {
+            var start = shortIdx + "youtu.be/".Length;
+            var end = url.IndexOfAny(['?', '&', '/'], start);
+            var id = (end >= 0 ? url[start..end] : url[start..]).Trim();
+            if (!string.IsNullOrWhiteSpace(id))
+            {
+                return $"https://www.youtube.com/embed/{id}";
+            }
+        }
+
+        return null;
+    }
+
+    var materialsUrl = Model.MaterialsHref;
+    var videoUrl = NormalizeUrl(Model.Lesson?.video_url);
+    var youtubeEmbed = !string.IsNullOrWhiteSpace(videoUrl) ? ToYouTubeEmbed(videoUrl) : null;
+}
+
+@if (Model.CourseHasNoLessons)
+{
+    <div class="alert alert-warning d-flex flex-wrap gap-2 align-items-center justify-content-between">
+        <span>Для курса «@Model.CourseTitle» в базе пока нет уроков (таблица LESSON / LESSONS с привязкой к этому курсу).</span>
+        @if (Model.RequestedCourseId is int cid && cid > 0)
+        {
+            <a class="btn btn-sm btn-outline-dark" asp-page="/Course" asp-route-courseId="@cid">К странице курса</a>
+        }
+    </div>
+}
+else
+{
+<section class="row g-4">
+    <div class="col-lg-7">
+        <div class="panel mb-3">
+            @if (!string.IsNullOrWhiteSpace(youtubeEmbed))
+            {
+                <div class="ratio ratio-16x9">
+                    <iframe src="@youtubeEmbed"
+                            title="Видео урока"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            }
+            else if (!string.IsNullOrEmpty(videoUrl) && (videoUrl.StartsWith("http", StringComparison.OrdinalIgnoreCase) || videoUrl.StartsWith("/")))
+            {
+                <video class="w-100" style="height:320px; background:#111;" controls preload="metadata" playsinline>
+                    <source src="@videoUrl" />
+                    Ваш браузер не поддерживает видео.
+                </video>
+            }
+            else
+            {
+                <div style="height:320px; display:flex; align-items:center; justify-content:center;">▶</div>
+            }
+            <p class="mb-1 text-muted">Курс: @(string.IsNullOrWhiteSpace(Model.CourseTitle) ? "Не найден" : Model.CourseTitle)</p>
+            <h3>@Model.Lesson?.Cours_name</h3>
+            <p>Урок №@(Model.LessonNumber?.ToString() ?? "-")</p>
+        </div>
+        <h1 class="display-5 fw-bold">@(string.IsNullOrWhiteSpace(Model.CourseTitle) ? Model.Lesson?.Cours_name : Model.CourseTitle)</h1>
+        <p class="fs-4 text-muted">Урок №@(Model.LessonNumber?.ToString() ?? "-"): @Model.Lesson?.Cours_name</p>
+        @* Кнопку "в новой вкладке" убрали по требованию *@
+
+        <ul class="nav nav-pills lesson-tabs mb-3" id="lessonDetailTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="materials-tab" data-bs-toggle="tab" data-bs-target="#lesson-pane-materials" type="button" role="tab" aria-controls="lesson-pane-materials" aria-selected="true">Материалы</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="homework-tab" data-bs-toggle="tab" data-bs-target="#lesson-pane-homework" type="button" role="tab" aria-controls="lesson-pane-homework" aria-selected="false">Домашнее задание</button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="notes-tab" data-bs-toggle="tab" data-bs-target="#lesson-pane-notes" type="button" role="tab" aria-controls="lesson-pane-notes" aria-selected="false">Заметки</button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="lessonTabContent">
+            <div class="tab-pane fade show active" id="lesson-pane-materials" role="tabpanel" aria-labelledby="materials-tab" tabindex="0">
+                <div class="panel">
+                    <h3>Материалы к уроку</h3>
+                    @if (string.IsNullOrWhiteSpace(materialsUrl))
+                    {
+                        <p class="text-muted mb-0">Путь к материалам не указан в базе (поле meterials_url в таблице уроков).</p>
+                    }
+                    else
+                    {
+                        <p class="mb-2">Файл или ссылка из БД:</p>
+                        <p class="mb-0">
+                            <a class="btn btn-outline-primary"
+                               asp-page="/MaterialViewer" asp-route-lessonId="@lessonId">
+                                Открыть
+                            </a>
+                            <a class="btn btn-outline-secondary ms-2"
+                               asp-page="/Lesson" asp-page-handler="MaterialDownload" asp-route-lessonId="@lessonId">
+                                Скачать
+                            </a>
+                            @if (Model.MaterialsIsLocalFile && !string.IsNullOrWhiteSpace(Model.MaterialsFileName))
+                            {
+                                <span class="text-muted small ms-2">(@Model.MaterialsFileName)</span>
+                            }
+                        </p>
+                        @if (!Model.MaterialsCanInlineView)
+                        {
+                            <p class="text-muted small mt-2 mb-0">
+                                Некоторые форматы (например, <code>.docx</code>) браузер не открывает — тогда при «Открыть» он всё равно предложит скачать.
+                            </p>
+                        }
+                    }
+                </div>
+            </div>
+            <div class="tab-pane fade" id="lesson-pane-homework" role="tabpanel" aria-labelledby="homework-tab" tabindex="0">
+                <div class="panel">
+                    <h3>Домашнее задание</h3>
+                    @if (!string.IsNullOrWhiteSpace(Model.HomeworkTaskHref))
+                    {
+                        <p class="mb-2">
+                            <a class="btn btn-outline-primary" href="@Model.HomeworkTaskHref">Скачать файл задания</a>
+                            @if (!string.IsNullOrWhiteSpace(Model.HomeworkTaskFileName))
+                            {
+                                <span class="text-muted small ms-2">(@Model.HomeworkTaskFileName)</span>
+                            }
+                        </p>
+                    }
+                    else
+                    {
+                        <p class="text-muted">Файл домашнего задания пока не загружен учителем.</p>
+                    }
+                    <p>
+                        @{
+                            var hwSt = (Model.HomeworkReview?.Status ?? string.Empty).Trim().ToLowerInvariant();
+                            var hwCls =
+                                hwSt == "accepted" ? "text-bg-success" :
+                                hwSt == "rework" ? "text-bg-danger" :
+                                hwSt == "submitted" ? "text-bg-warning" :
+                                "text-bg-secondary";
+                            var hwLabel =
+                                hwSt == "accepted" ? "принято" :
+                                hwSt == "rework" ? "на доработку" :
+                                hwSt == "submitted" ? "отправлено" :
+                                "не отправлено";
+                        }
+                        <span class="badge @hwCls">Статус: @hwLabel</span>
+                        <span class="badge text-bg-success">Оценка: @(Model.HomeworkReview?.Grade?.ToString() ?? "нет")</span>
+                    </p>
+                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        @if (lessonId > 0)
+                        {
+                            if (!string.IsNullOrWhiteSpace(Model.HomeworkTaskHref))
+                            {
+                                <a class="btn btn-primary" href="@Model.HomeworkTaskHref">Перейти к заданию</a>
+                            }
+                            else if (User.Identity?.IsAuthenticated == true)
+                            {
+                                <a class="btn btn-primary" asp-page="/Tasks" asp-route-lessonId="@lessonId">Перейти к заданию</a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-primary" asp-page="/Login" asp-route-ReturnUrl="@(Url.Page("/Tasks", null, new { lessonId = lessonId }))">Войти и перейти к заданию</a>
+                            }
+                            @* Кнопку "Заметки к уроку" убрали по требованию *@
+                        }
+                        else
+                        {
+                            <span class="text-muted">Урок не загружен — переход к заданиям недоступен.</span>
+                        }
+                    </div>
+
+                    <hr class="my-3" />
+                    <h4 class="h5 mb-2">Отправить выполненное ДЗ (файлом)</h4>
+                    @if (User.Identity?.IsAuthenticated != true)
+                    {
+                        <div class="alert alert-info mb-2">
+                            Чтобы загрузить файл, нужно <a asp-page="/Login">войти</a>.
+                        </div>
+                    }
+                    else if (homeworkId <= 0)
+                    {
+                        <div class="alert alert-info mb-2">
+                            У этого урока пока нет домашнего задания: учитель ещё не загрузил файл задания. Когда задание появится, здесь можно будет отправить решение.
+                        </div>
+                    }
+                    else if (Model.CourseEnrollmentFinished)
+                    {
+                        <div class="alert alert-secondary mb-2">
+                            Обучение по этому курсу завершено. Отправка новых домашних заданий недоступна; вы можете просматривать материалы и уроки.
+                        </div>
+                    }
+                    else
+                    {
+                        <form method="post" enctype="multipart/form-data" asp-page-handler="UploadHomework" class="d-flex flex-wrap gap-2 align-items-center">
+                            <input type="hidden" name="lessonId" value="@lessonId" />
+                            <input type="hidden" name="homeworkId" value="@homeworkId" />
+                            <input class="form-control" style="max-width: 420px;" type="file" name="file" />
+                            <button class="btn btn-success" type="submit">Загрузить файл</button>
+                            <a class="btn btn-outline-secondary" asp-page="/UserProfile">Смотреть в профиле</a>
+                        </form>
+                        <p class="text-muted small mt-2 mb-0">Файл сохранится на сервере и будет доступен в профиле пользователя.</p>
+                    }
+                </div>
+            </div>
+            <div class="tab-pane fade" id="lesson-pane-notes" role="tabpanel" aria-labelledby="notes-tab" tabindex="0">
+                <div class="panel">
+                    <h3>Заметки</h3>
+                    <p class="text-muted small">Сохраняются в браузере на этом устройстве (localStorage).</p>
+                    <label class="form-label" for="lessonNotesBody">Ваши заметки к уроку</label>
+                    <textarea class="form-control" id="lessonNotesBody" rows="10" placeholder="Кратко запишите главное из урока…" @(lessonId <= 0 ? "disabled" : null)></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="panel mb-3">
+            <h3>Плейлист курса</h3>
+            <ul class="clean-list">
+                @if (Model.CoursePlaylist.Count == 0)
+                {
+                    <li class="text-muted">Уроки курса не найдены.</li>
+                }
+                else
+                {
+                    for (var i = 0; i < Model.CoursePlaylist.Count; i++)
+                    {
+                        var playlistLesson = Model.CoursePlaylist[i];
+                        var lessonNumber = playlistLesson.number_lesson ?? (i + 1);
+                        var isActive = Model.Lesson?.ID_lesson == playlistLesson.ID_lesson;
+                        <li class="playlist-item @(isActive ? "active" : string.Empty)">
+                            <a asp-page="/Lesson" asp-route-lessonId="@playlistLesson.ID_lesson">
+                                Урок №@lessonNumber: @playlistLesson.Cours_name
+                            </a>
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
+        <div class="panel">
+            <h4>Прогресс курса</h4>
+            <div class="d-flex justify-content-between"><span class="display-6">@Model.CourseProgressPercent%</span><span class="text-muted">После проверки</span></div>
+            <div class="progress-wrap"><div class="progress-bar-blue" style="width:@Model.CourseProgressPercent%"></div></div>
+        </div>
+    </div>
+</section>
+}
+
+@section Scripts
+{
+    @if (lessonId > 0)
+    {
+        <script>
+            (function () {
+                var lessonId = @lessonId;
+                var key = 'eduplatform_lesson_notes_' + lessonId;
+                var ta = document.getElementById('lessonNotesBody');
+                if (!ta) return;
+                try {
+                    ta.value = localStorage.getItem(key) || '';
+                } catch (e) { }
+                ta.addEventListener('input', function () {
+                    try { localStorage.setItem(key, ta.value); } catch (e) { }
+                });
+            })();
+        </script>
+    }
+}

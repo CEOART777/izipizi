@@ -1,0 +1,285 @@
+@page
+@model практика_2._0.Pages.TeacherCourseModel
+@{
+    ViewData["Title"] = "Курс (проверка ДЗ)";
+}
+
+    <div class="panel mb-3">
+        <div class="d-flex flex-wrap gap-2 align-items-center justify-content-between">
+            <div>
+                <h2 class="mb-1">Проверка: @Model.Course?.Course_name</h2>
+            </div>
+            <div class="d-flex gap-2">
+                <a class="btn btn-outline-secondary" asp-page="/Teacher">Назад</a>
+            </div>
+        </div>
+    @if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger mt-3 mb-0">@Model.ErrorMessage</div>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.SuccessMessage))
+    {
+        <div class="alert alert-success mt-3 mb-0">@Model.SuccessMessage</div>
+    }
+</div>
+
+@if (Model.Course is null)
+{
+    <div class="alert alert-warning">Курс не найден или вам не назначен.</div>
+}
+else if (Model.Blocks.Count == 0)
+{
+    <div class="panel">
+        <div class="alert alert-info">В этом курсе пока нет уроков. Добавьте первый урок.</div>
+        <a class="btn btn-sm btn-primary" asp-page="/TeacherLessonCreate" asp-route-courseId="@Model.CourseId">Создать урок</a>
+    </div>
+}
+else
+{
+    <div class="panel mb-3">
+        <a class="btn btn-sm btn-outline-primary" asp-page="/TeacherLessonCreate" asp-route-courseId="@Model.CourseId">Создать урок</a>
+    </div>
+    <div class="panel mb-3">
+        <form method="get" class="d-flex flex-wrap gap-2 align-items-center">
+            <input type="hidden" name="courseId" value="@Model.CourseId" />
+            <label class="form-label mb-0">Показывать</label>
+            <select class="form-select" name="show" style="max-width: 320px;">
+                <option value="pending" selected="@(string.Equals(Model.Show, "pending", StringComparison.OrdinalIgnoreCase))">Ждут проверки</option>
+                <option value="submitted" selected="@(string.Equals(Model.Show, "submitted", StringComparison.OrdinalIgnoreCase))">Только отправили (submitted)</option>
+                <option value="reviewed" selected="@(string.Equals(Model.Show, "reviewed", StringComparison.OrdinalIgnoreCase))">Проверенные (accepted/rework)</option>
+                <option value="all" selected="@(string.Equals(Model.Show, "all", StringComparison.OrdinalIgnoreCase))">Все ученики</option>
+            </select>
+            <button class="btn btn-outline-primary" type="submit">Применить</button>
+        </form>
+        <div class="text-muted small mt-2">По умолчанию показываются работы, которые требуют внимания учителя.</div>
+    </div>
+
+    <div class="panel mb-3">
+        <h4 class="h5 mb-2">Завершение обучения</h4>
+        @if (Model.StudentCompletions.Count == 0)
+        {
+            <div class="text-muted">Нет учеников или данные недоступны.</div>
+        }
+        else
+        {
+            <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0">
+                    <thead>
+                    <tr>
+                        <th>Ученик</th>
+                        <th style="min-width:220px;">Прогресс</th>
+                        <th style="min-width:120px;">ДЗ</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var s in Model.StudentCompletions)
+                    {
+                        <tr>
+                            <td>
+                                <div class="fw-semibold">@s.User.full_name</div>
+                                <div class="text-muted small">@s.User.email</div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                    <span class="fw-semibold">@s.ProgressPercent%</span>
+                                    <div class="progress flex-grow-1" style="min-width:100px;height:10px;">
+                                        <div class="progress-bar" role="progressbar" style="width:@s.ProgressPercent%"></div>
+                                    </div>
+                                </div>
+                                <div class="text-muted small mt-1">
+                                    @if (s.ProgressPercent >= 100)
+                                    {
+                                        <span>Пройдено, можно завершить обучение</span>
+                                    }
+                                    else if (s.ProgressPercent > 0)
+                                    {
+                                        <span>Идёт прохождение</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Нет зачтённых ДЗ</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                @if (s.AllRequiredAccepted)
+                                {
+                                    <span class="text-success">✓ все приняты</span>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">✗ не всё принято</span>
+                                }
+                            </td>
+                            <td class="text-end">
+                                <form method="post" asp-page-handler="Complete" class="d-inline">
+                                    <input type="hidden" name="courseId" value="@Model.CourseId" />
+                                    <input type="hidden" name="show" value="@Model.Show" />
+                                    <input type="hidden" name="userId" value="@s.User.ID_user" />
+                                    <button class="btn btn-sm btn-outline-success" type="submit" @(s.CanComplete ? null : "disabled")>
+                                        Завершить обучение
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <div class="text-muted small mt-2">
+                Кнопка «Завершить обучение» активна, когда прогресс курса у ученика <strong>100%</strong>. Колонка «ДЗ» — сводка: все ли обязательные работы приняты.
+            </div>
+        }
+    </div>
+
+    <div class="accordion" id="teacherCourseAccordion">
+        @for (var i = 0; i < Model.Blocks.Count; i++)
+        {
+            var b = Model.Blocks[i];
+            var accId = $"acc_{b.Lesson.ID_lesson}";
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="h_@accId">
+                    <div class="d-flex align-items-stretch">
+                        <button class="accordion-button @(i == 0 ? string.Empty : "collapsed") flex-grow-1"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#c_@accId"
+                                aria-expanded="@(i == 0 ? "true" : "false")"
+                                aria-controls="c_@accId">
+                            <span class="me-2">Урок №@(b.Lesson.number_lesson?.ToString() ?? "-"): @b.Lesson.Cours_name</span>
+                            <span class="ms-auto d-flex flex-wrap gap-2 align-items-center small text-dark">
+                                <span class="rounded border border-secondary px-2 py-1 bg-light">отпр.: @b.SubmittedCount</span>
+                                <span class="rounded border border-success px-2 py-1 bg-success bg-opacity-10">прин.: @b.AcceptedCount</span>
+                                <span class="rounded border border-danger px-2 py-1 bg-danger bg-opacity-10">дораб.: @b.ReworkCount</span>
+                            </span>
+                        </button>
+                        <a class="btn btn-sm btn-outline-secondary ms-2 align-self-center"
+                           asp-page="/TeacherLessonEdit"
+                           asp-route-lessonId="@b.Lesson.ID_lesson">
+                            Изменить урок
+                        </a>
+                        <form method="post" asp-page-handler="DeleteLesson" class="ms-2 align-self-center">
+                            <input type="hidden" name="courseId" value="@Model.CourseId" />
+                            <input type="hidden" name="show" value="@Model.Show" />
+                            <input type="hidden" name="lessonId" value="@b.Lesson.ID_lesson" />
+                            <button class="btn btn-sm btn-outline-danger" type="submit"
+                                    onclick="return confirm('Удалить этот урок? Действие нельзя отменить.');">
+                                Удалить урок
+                            </button>
+                        </form>
+                    </div>
+                </h2>
+                <div id="c_@accId"
+                     class="accordion-collapse collapse @(i == 0 ? "show" : string.Empty)"
+                     aria-labelledby="h_@accId"
+                     data-bs-parent="#teacherCourseAccordion">
+                    <div class="accordion-body">
+                        <div class="mb-3 p-2 border rounded">
+                            <form method="post" enctype="multipart/form-data" asp-page-handler="UploadHomeworkTask" class="d-flex flex-wrap gap-2 align-items-end">
+                                <input type="hidden" name="courseId" value="@Model.CourseId" />
+                                <input type="hidden" name="show" value="@Model.Show" />
+                                <input type="hidden" name="lessonId" value="@b.Lesson.ID_lesson" />
+                                <div>
+                                    <label class="form-label mb-1 small">Файл домашнего задания</label>
+                                    <input class="form-control form-control-sm" type="file" name="file" style="max-width: 320px;" />
+                                    @if (!string.IsNullOrWhiteSpace(b.HomeworkTaskFileName))
+                                    {
+                                        <div class="form-text">Текущий файл: @b.HomeworkTaskFileName</div>
+                                    }
+                                </div>
+                                <button class="btn btn-sm btn-outline-primary" type="submit">
+                                    @(string.IsNullOrWhiteSpace(b.HomeworkTaskFileName) ? "Добавить ДЗ" : "Обновить ДЗ")
+                                </button>
+                            </form>
+                        </div>
+                        @if (b.HomeworkId <= 0)
+                        {
+                            <div class="alert alert-info mb-3">
+                                Для этого урока пока не назначено домашнее задание. Загрузите файл задания выше — после этого появится привязка и можно будет принимать работы учеников.
+                            </div>
+                        }
+                        <div class="table-responsive">
+                            <table class="table align-middle mb-0">
+                                <thead>
+                                <tr>
+                                    <th style="min-width:240px;">Ученик</th>
+                                    <th style="min-width:220px;">Файлы ДЗ</th>
+                                    <th style="min-width:180px;">Статус</th>
+                                    <th style="min-width:220px;">Проверка</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var s in b.Students)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="fw-semibold">@s.User.full_name</div>
+                                            <div class="text-muted small">@s.User.email</div>
+                                        </td>
+                                        <td>
+                                            @if (s.Submissions.Count == 0)
+                                            {
+                                                <span class="text-muted">нет</span>
+                                            }
+                                            else
+                                            {
+                                                <ul class="clean-list mb-0">
+                                                    @foreach (var sub in s.Submissions)
+                                                    {
+                                                        <li class="mb-1">
+                                                            <a href="@sub.Url" target="_blank" rel="noopener">@sub.FileName</a>
+                                                            <span class="text-muted small ms-2">@sub.UploadedAt.ToString("dd.MM.yyyy HH:mm")</span>
+                                                        </li>
+                                                    }
+                                                </ul>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (b.HomeworkId <= 0)
+                                            {
+                                                <span class="text-muted">Нет ДЗ по уроку</span>
+                                            }
+                                            else
+                                            {
+                                                var st = (s.EffectiveStatus ?? string.Empty).Trim().ToLowerInvariant();
+                                                var cls =
+                                                    st == "accepted" ? "text-success" :
+                                                    st == "rework" ? "text-danger" :
+                                                    st == "submitted" ? "text-primary" :
+                                                    "text-muted";
+                                                var label = string.IsNullOrWhiteSpace(st) ? "не отправлено" : st;
+                                                <span class="fw-medium @cls">@label</span>
+                                                <div class="text-muted small mt-1">
+                                                    Оценка: @(s.Review?.Grade?.ToString() ?? "нет")
+                                                </div>
+                                            }
+                                        </td>
+                                        <td>
+                                            <form method="post" class="d-flex flex-wrap gap-2 align-items-center">
+                                                <input type="hidden" name="courseId" value="@Model.CourseId" />
+                                                <input type="hidden" name="show" value="@Model.Show" />
+                                                <input type="hidden" name="userId" value="@s.User.ID_user" />
+                                                <input type="hidden" name="homeworkId" value="@b.HomeworkId" />
+                                                <input type="hidden" name="lessonId" value="@b.Lesson.ID_lesson" />
+
+                                                <select class="form-select" name="status" style="max-width: 170px;" @(b.HomeworkId <= 0 ? "disabled" : null)>
+                                                    <option value="accepted">Принять</option>
+                                                    <option value="rework">На доработку</option>
+                                                </select>
+                                                <input class="form-control" name="grade" type="number" min="1" max="5" placeholder="Оценка" style="max-width:120px;" @(b.HomeworkId <= 0 ? "disabled" : null) />
+                                                <button class="btn btn-outline-primary" type="submit" @(b.HomeworkId <= 0 ? "disabled" : null)>Сохранить</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
